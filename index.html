@@ -862,26 +862,36 @@
             text-decoration: underline;
         }
 
+        a.doc-link::before {
+            content: '📄';
+            font-size: 0.75rem;
+        }
+
         a.doc-link::after {
             content: '↗';
             font-size: 0.7rem;
         }
 
         .matrix-doc-link {
-            display: block;
-            margin-top: 0.3rem;
+            display: flex;
+            margin-top: 0.5rem;
+            width: fit-content;
         }
 
         .quiz-doc-link {
-            margin-top: 0.75rem;
+            margin-top: 1rem;
             padding-top: 0.75rem;
             border-top: 1px solid var(--border-color);
-            display: block;
+            display: flex;
+            width: fit-content;
         }
 
         .tech-doc-link {
-            margin-top: 1rem;
-            display: block;
+            margin-top: 1.2rem;
+            padding-top: 0.75rem;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            width: fit-content;
         }
     </style>
 </head>
@@ -1707,7 +1717,7 @@ function renderMatrix() {
 
     tbody.innerHTML = filtered.map(row => `
         <tr>
-            <td><strong>${row.feature}</strong>${row.docUrl ? `<a href="${row.docUrl}" target="_blank" rel="noopener" class="doc-link matrix-doc-link">MS Learn</a>` : ''}</td>
+            <td><div><strong>${row.feature}</strong></div>${row.docUrl ? `<a href="${row.docUrl}" target="_blank" rel="noopener" class="doc-link matrix-doc-link">MS Learn</a>` : ''}</td>
             <td>${row.iaas ? '<span class="check">✓</span>' : '<span class="cross">✗</span>'}</td>
             <td>${row.paasDb ? '<span class="check">✓</span>' : '<span class="cross">✗</span>'}</td>
             <td>${row.paasMi ? '<span class="check">✓</span>' : '<span class="cross">✗</span>'}</td>
@@ -1764,7 +1774,7 @@ function renderTechExplorer() {
                 </div>
             </div>
             <div class="tech-card-toggle">Click to expand details ▼</div>
-            <div class="tech-card-detail">${tech.detail}${tech.docUrl ? `<a href="${tech.docUrl}" target="_blank" rel="noopener" class="doc-link tech-doc-link">Read full documentation on MS Learn</a>` : ''}</div>
+            <div class="tech-card-detail"><p>${tech.detail}</p>${tech.docUrl ? `<a href="${tech.docUrl}" target="_blank" rel="noopener" class="doc-link tech-doc-link">Read full documentation on MS Learn</a>` : ''}</div>
         </div>`;
     }).join('');
 }
@@ -1832,7 +1842,7 @@ function renderQuiz() {
                 }).join('')}
             </div>
             <div class="quiz-explanation ${answered !== undefined ? 'visible' : ''}" id="quiz-explanation">
-                <strong>Explanation:</strong> ${q.explanation}${q.docUrl ? `<a href="${q.docUrl}" target="_blank" rel="noopener" class="doc-link quiz-doc-link">Learn more on MS Learn</a>` : ''}
+                <strong>Explanation:</strong> <span>${q.explanation}</span>${q.docUrl ? `<a href="${q.docUrl}" target="_blank" rel="noopener" class="doc-link quiz-doc-link">Learn more on MS Learn</a>` : ''}
             </div>
             <div class="quiz-actions">
                 <button class="btn btn-secondary" onclick="prevQuestion()" ${quizState.currentIndex === 0 ? 'disabled' : ''}>← Previous</button>
