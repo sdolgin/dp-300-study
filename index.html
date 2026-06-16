@@ -1,0 +1,1960 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DP-300 HADR Mastery — Study Hub</title>
+    <style>
+        :root {
+            --bg-primary: #0f0f1a;
+            --bg-secondary: #1a1a2e;
+            --bg-card: #16213e;
+            --bg-card-hover: #1a2744;
+            --text-primary: #e8e8f0;
+            --text-secondary: #a0a0b8;
+            --text-muted: #6b6b80;
+            --accent-blue: #4fc3f7;
+            --accent-purple: #b388ff;
+            --accent-green: #69f0ae;
+            --accent-orange: #ffab40;
+            --accent-red: #ff5252;
+            --accent-cyan: #18ffff;
+            --gradient-main: linear-gradient(135deg, #4fc3f7 0%, #b388ff 100%);
+            --gradient-iaas: linear-gradient(135deg, #4fc3f7 0%, #29b6f6 100%);
+            --gradient-paas-db: linear-gradient(135deg, #69f0ae 0%, #00e676 100%);
+            --gradient-paas-mi: linear-gradient(135deg, #b388ff 0%, #7c4dff 100%);
+            --border-color: #2a2a4a;
+            --shadow: 0 4px 24px rgba(0,0,0,0.4);
+            --shadow-hover: 0 8px 32px rgba(79,195,247,0.15);
+            --radius: 12px;
+            --radius-sm: 8px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        /* Header */
+        .header {
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border-color);
+            padding: 1.5rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--gradient-main);
+            border-radius: var(--radius-sm);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        .logo h1 {
+            font-size: 1.3rem;
+            background: var(--gradient-main);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .logo-subtitle {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Navigation */
+        .nav {
+            display: flex;
+            gap: 0.25rem;
+            background: var(--bg-primary);
+            padding: 4px;
+            border-radius: var(--radius);
+        }
+
+        .nav-btn {
+            padding: 0.6rem 1.2rem;
+            border: none;
+            background: transparent;
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            font-weight: 500;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: var(--transition);
+            white-space: nowrap;
+        }
+
+        .nav-btn:hover {
+            color: var(--text-primary);
+            background: var(--bg-card);
+        }
+
+        .nav-btn.active {
+            background: var(--gradient-main);
+            color: #0f0f1a;
+            font-weight: 600;
+        }
+
+        /* Main Content */
+        .main {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .section {
+            display: none;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Section Headers */
+        .section-header {
+            margin-bottom: 2rem;
+        }
+
+        .section-header h2 {
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .section-header p {
+            color: var(--text-secondary);
+            font-size: 1rem;
+        }
+
+        /* Badges */
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.25rem 0.7rem;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .badge-iaas {
+            background: rgba(79,195,247,0.15);
+            color: var(--accent-blue);
+            border: 1px solid rgba(79,195,247,0.3);
+        }
+
+        .badge-paas-db {
+            background: rgba(105,240,174,0.15);
+            color: var(--accent-green);
+            border: 1px solid rgba(105,240,174,0.3);
+        }
+
+        .badge-paas-mi {
+            background: rgba(179,136,255,0.15);
+            color: var(--accent-purple);
+            border: 1px solid rgba(179,136,255,0.3);
+        }
+
+        .badge-both {
+            background: rgba(255,171,64,0.15);
+            color: var(--accent-orange);
+            border: 1px solid rgba(255,171,64,0.3);
+        }
+
+        /* ==================== COMPARISON MATRIX ==================== */
+        .matrix-filters {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 0.5rem 1rem;
+            border: 1px solid var(--border-color);
+            background: var(--bg-card);
+            color: var(--text-secondary);
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+
+        .filter-btn:hover {
+            border-color: var(--accent-blue);
+            color: var(--text-primary);
+        }
+
+        .filter-btn.active {
+            background: var(--gradient-main);
+            color: #0f0f1a;
+            border-color: transparent;
+            font-weight: 600;
+        }
+
+        .matrix-table-wrapper {
+            overflow-x: auto;
+            border-radius: var(--radius);
+            border: 1px solid var(--border-color);
+            background: var(--bg-secondary);
+        }
+
+        .matrix-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.85rem;
+        }
+
+        .matrix-table th {
+            background: var(--bg-card);
+            padding: 1rem 0.75rem;
+            text-align: left;
+            font-weight: 600;
+            color: var(--text-primary);
+            border-bottom: 2px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            white-space: nowrap;
+        }
+
+        .matrix-table td {
+            padding: 0.85rem 0.75rem;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            vertical-align: top;
+        }
+
+        .matrix-table tr:hover td {
+            background: var(--bg-card-hover);
+            color: var(--text-primary);
+        }
+
+        .matrix-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .check {
+            color: var(--accent-green);
+            font-weight: bold;
+        }
+
+        .cross {
+            color: var(--accent-red);
+            opacity: 0.5;
+        }
+
+        .partial {
+            color: var(--accent-orange);
+        }
+
+        /* ==================== TECHNOLOGY EXPLORER ==================== */
+        .tech-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .tech-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            cursor: pointer;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .tech-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--gradient-main);
+            opacity: 0;
+            transition: var(--transition);
+        }
+
+        .tech-card:hover {
+            border-color: rgba(79,195,247,0.3);
+            box-shadow: var(--shadow-hover);
+            transform: translateY(-2px);
+        }
+
+        .tech-card:hover::before {
+            opacity: 1;
+        }
+
+        .tech-card-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+        }
+
+        .tech-card h3 {
+            font-size: 1.1rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .tech-card-desc {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            margin-bottom: 1rem;
+            line-height: 1.5;
+        }
+
+        .tech-card-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+        }
+
+        .stat-item {
+            background: var(--bg-primary);
+            padding: 0.6rem 0.8rem;
+            border-radius: var(--radius-sm);
+        }
+
+        .stat-label {
+            font-size: 0.65rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .stat-value {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-top: 0.15rem;
+        }
+
+        .tech-card-detail {
+            display: none;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border-color);
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            line-height: 1.7;
+        }
+
+        .tech-card.expanded .tech-card-detail {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .tech-card-toggle {
+            font-size: 0.75rem;
+            color: var(--accent-blue);
+            text-align: center;
+            padding-top: 0.5rem;
+        }
+
+        /* ==================== QUIZ ENGINE ==================== */
+        .quiz-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .quiz-progress {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .quiz-progress-bar {
+            flex: 1;
+            height: 6px;
+            background: var(--bg-card);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .quiz-progress-fill {
+            height: 100%;
+            background: var(--gradient-main);
+            border-radius: 3px;
+            transition: width 0.4s ease;
+        }
+
+        .quiz-progress-text {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            white-space: nowrap;
+        }
+
+        .quiz-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            padding: 2rem;
+        }
+
+        .quiz-category {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--accent-blue);
+            margin-bottom: 0.75rem;
+        }
+
+        .quiz-question {
+            font-size: 1.15rem;
+            font-weight: 500;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+        }
+
+        .quiz-options {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .quiz-option {
+            padding: 1rem 1.25rem;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 0.9rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+        }
+
+        .quiz-option:hover:not(.disabled) {
+            border-color: var(--accent-blue);
+            background: rgba(79,195,247,0.05);
+        }
+
+        .quiz-option.selected {
+            border-color: var(--accent-blue);
+            background: rgba(79,195,247,0.1);
+        }
+
+        .quiz-option.correct {
+            border-color: var(--accent-green);
+            background: rgba(105,240,174,0.1);
+        }
+
+        .quiz-option.incorrect {
+            border-color: var(--accent-red);
+            background: rgba(255,82,82,0.1);
+        }
+
+        .quiz-option.disabled {
+            cursor: default;
+            opacity: 0.7;
+        }
+
+        .quiz-option-letter {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: var(--bg-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+
+        .quiz-explanation {
+            margin-top: 1.5rem;
+            padding: 1.25rem;
+            background: var(--bg-primary);
+            border-radius: var(--radius-sm);
+            border-left: 3px solid var(--accent-blue);
+            font-size: 0.85rem;
+            line-height: 1.6;
+            color: var(--text-secondary);
+            display: none;
+        }
+
+        .quiz-explanation.visible {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .quiz-explanation strong {
+            color: var(--text-primary);
+        }
+
+        .quiz-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 1.5rem;
+        }
+
+        .btn {
+            padding: 0.7rem 1.5rem;
+            border: none;
+            border-radius: var(--radius-sm);
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .btn-primary {
+            background: var(--gradient-main);
+            color: #0f0f1a;
+        }
+
+        .btn-primary:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--accent-blue);
+        }
+
+        .btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Quiz Results */
+        .quiz-results {
+            text-align: center;
+            padding: 3rem 2rem;
+        }
+
+        .quiz-results h3 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .quiz-score {
+            font-size: 3rem;
+            font-weight: 700;
+            background: var(--gradient-main);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin: 1rem 0;
+        }
+
+        .quiz-score-detail {
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+        }
+
+        /* ==================== FLASHCARDS ==================== */
+        .flashcard-container {
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .flashcard-progress {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.5rem;
+        }
+
+        .flashcard-counter {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .flashcard-category-filter {
+            display: flex;
+            gap: 0.4rem;
+            flex-wrap: wrap;
+        }
+
+        .flashcard-wrapper {
+            perspective: 1000px;
+            margin-bottom: 1.5rem;
+        }
+
+        .flashcard {
+            width: 100%;
+            min-height: 300px;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+        }
+
+        .flashcard.flipped {
+            transform: rotateY(180deg);
+        }
+
+        .flashcard-face {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: var(--radius);
+            padding: 2.5rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+
+        .flashcard-front {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+        }
+
+        .flashcard-back {
+            background: var(--bg-card);
+            border: 1px solid var(--accent-blue);
+            transform: rotateY(180deg);
+        }
+
+        .flashcard-label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--accent-blue);
+            margin-bottom: 1.5rem;
+        }
+
+        .flashcard-text {
+            font-size: 1.2rem;
+            line-height: 1.6;
+            font-weight: 500;
+        }
+
+        .flashcard-back .flashcard-text {
+            font-size: 1rem;
+            font-weight: 400;
+            color: var(--text-secondary);
+        }
+
+        .flashcard-hint {
+            position: absolute;
+            bottom: 1.5rem;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        .flashcard-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+        }
+
+        .flashcard-btn {
+            padding: 0.8rem 2rem;
+            border: none;
+            border-radius: var(--radius-sm);
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .flashcard-btn-know {
+            background: rgba(105,240,174,0.15);
+            color: var(--accent-green);
+            border: 1px solid rgba(105,240,174,0.3);
+        }
+
+        .flashcard-btn-know:hover {
+            background: rgba(105,240,174,0.25);
+        }
+
+        .flashcard-btn-learn {
+            background: rgba(255,171,64,0.15);
+            color: var(--accent-orange);
+            border: 1px solid rgba(255,171,64,0.3);
+        }
+
+        .flashcard-btn-learn:hover {
+            background: rgba(255,171,64,0.25);
+        }
+
+        .flashcard-btn-skip {
+            background: var(--bg-primary);
+            color: var(--text-secondary);
+            border: 1px solid var(--border-color);
+        }
+
+        /* ==================== PROGRESS DASHBOARD ==================== */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .dashboard-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+        }
+
+        .dashboard-card h4 {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 1rem;
+        }
+
+        .dashboard-stat {
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: var(--gradient-main);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .dashboard-stat-sub {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-top: 0.25rem;
+        }
+
+        .progress-bar-container {
+            margin-top: 1rem;
+        }
+
+        .progress-bar-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            margin-bottom: 0.4rem;
+        }
+
+        .progress-bar-label span:first-child {
+            color: var(--text-secondary);
+        }
+
+        .progress-bar-label span:last-child {
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        .progress-bar {
+            height: 8px;
+            background: var(--bg-primary);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 0.75rem;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            border-radius: 4px;
+            transition: width 0.6s ease;
+        }
+
+        .progress-bar-fill.blue { background: var(--gradient-iaas); }
+        .progress-bar-fill.green { background: var(--gradient-paas-db); }
+        .progress-bar-fill.purple { background: var(--gradient-paas-mi); }
+        .progress-bar-fill.orange { background: linear-gradient(135deg, #ffab40, #ff6d00); }
+
+        .btn-reset {
+            margin-top: 1.5rem;
+            padding: 0.6rem 1.2rem;
+            background: rgba(255,82,82,0.1);
+            color: var(--accent-red);
+            border: 1px solid rgba(255,82,82,0.3);
+            border-radius: var(--radius-sm);
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .btn-reset:hover {
+            background: rgba(255,82,82,0.2);
+        }
+
+        /* ==================== RESPONSIVE ==================== */
+        @media (max-width: 768px) {
+            .header-content { flex-direction: column; align-items: flex-start; }
+            .nav { overflow-x: auto; width: 100%; }
+            .main { padding: 1rem; }
+            .tech-grid { grid-template-columns: 1fr; }
+            .flashcard-face { padding: 1.5rem; }
+            .flashcard-text { font-size: 1rem; }
+            .quiz-card { padding: 1.5rem; }
+            .dashboard-grid { grid-template-columns: 1fr; }
+        }
+
+        /* Utility */
+        .hidden { display: none !important; }
+        .text-center { text-align: center; }
+        .mt-1 { margin-top: 1rem; }
+        .mt-2 { margin-top: 2rem; }
+    </style>
+</head>
+<body>
+
+<header class="header">
+    <div class="header-content">
+        <div class="logo">
+            <div class="logo-icon">HA</div>
+            <div>
+                <h1>DP-300 HADR Mastery</h1>
+                <div class="logo-subtitle">High Availability & Disaster Recovery</div>
+            </div>
+        </div>
+        <nav class="nav" role="tablist">
+            <button class="nav-btn active" data-tab="matrix" role="tab" aria-selected="true">Compare</button>
+            <button class="nav-btn" data-tab="explorer" role="tab">Explore</button>
+            <button class="nav-btn" data-tab="quiz" role="tab">Quiz</button>
+            <button class="nav-btn" data-tab="flashcards" role="tab">Flashcards</button>
+            <button class="nav-btn" data-tab="progress" role="tab">Progress</button>
+        </nav>
+    </div>
+</header>
+
+<main class="main">
+
+    <!-- ==================== COMPARISON MATRIX ==================== -->
+    <section id="section-matrix" class="section active">
+        <div class="section-header">
+            <h2>HADR Comparison Matrix</h2>
+            <p>Compare high availability and disaster recovery features across Azure SQL platforms</p>
+        </div>
+
+        <div class="matrix-filters">
+            <button class="filter-btn active" data-filter="all">All Platforms</button>
+            <button class="filter-btn" data-filter="iaas">IaaS (SQL VM)</button>
+            <button class="filter-btn" data-filter="paas-db">PaaS (SQL DB)</button>
+            <button class="filter-btn" data-filter="paas-mi">PaaS (Managed Instance)</button>
+        </div>
+
+        <div class="matrix-table-wrapper">
+            <table class="matrix-table" id="comparison-table">
+                <thead>
+                    <tr>
+                        <th>Feature / Technology</th>
+                        <th>SQL Server on VM (IaaS)</th>
+                        <th>Azure SQL Database (PaaS)</th>
+                        <th>Azure SQL MI (PaaS)</th>
+                        <th>Failover Type</th>
+                        <th>RPO</th>
+                        <th>RTO</th>
+                        <th>Read Scale-Out</th>
+                    </tr>
+                </thead>
+                <tbody id="matrix-body"></tbody>
+            </table>
+        </div>
+
+        <div class="mt-2">
+            <div class="section-header">
+                <h2>Service Tier HA Architecture</h2>
+                <p>How built-in HA differs by Azure SQL Database service tier</p>
+            </div>
+            <div class="matrix-table-wrapper">
+                <table class="matrix-table">
+                    <thead>
+                        <tr>
+                            <th>Aspect</th>
+                            <th>General Purpose</th>
+                            <th>Business Critical</th>
+                            <th>Hyperscale</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Architecture</strong></td>
+                            <td>Separated compute & remote storage</td>
+                            <td>Integrated compute + storage (Always On AG under the hood)</td>
+                            <td>Stateless compute + distributed page servers</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Replicas</strong></td>
+                            <td>No local replicas (storage redundancy only)</td>
+                            <td>3 synchronous secondary replicas (1 readable)</td>
+                            <td>Multiple page servers + named replicas</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Failover Speed</strong></td>
+                            <td>Minutes (new compute attaches to remote storage)</td>
+                            <td>Seconds (promotes synced replica)</td>
+                            <td>Seconds (stateless compute reconnects)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Read Scale-Out</strong></td>
+                            <td><span class="cross">✗ Not available</span></td>
+                            <td><span class="check">✓ 1 readable replica</span></td>
+                            <td><span class="check">✓ Up to 30 named replicas</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Zone Redundancy</strong></td>
+                            <td><span class="check">✓ Available</span></td>
+                            <td><span class="check">✓ Available</span></td>
+                            <td><span class="check">✓ Available</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Max DB Size</strong></td>
+                            <td>Up to 4 TB</td>
+                            <td>Up to 4 TB</td>
+                            <td>Up to 128 TB</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Best For</strong></td>
+                            <td>Standard workloads, cost-sensitive</td>
+                            <td>Mission-critical, low-latency OLTP</td>
+                            <td>Large databases, elastic scale</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== TECHNOLOGY EXPLORER ==================== -->
+    <section id="section-explorer" class="section">
+        <div class="section-header">
+            <h2>Technology Explorer</h2>
+            <p>Deep-dive into each HADR technology — click a card to expand details</p>
+        </div>
+        <div class="tech-grid" id="tech-grid"></div>
+    </section>
+
+    <!-- ==================== QUIZ ENGINE ==================== -->
+    <section id="section-quiz" class="section">
+        <div class="section-header">
+            <h2>Scenario Quiz</h2>
+            <p>Test your knowledge with exam-style scenario questions</p>
+        </div>
+        <div class="quiz-container" id="quiz-container"></div>
+    </section>
+
+    <!-- ==================== FLASHCARDS ==================== -->
+    <section id="section-flashcards" class="section">
+        <div class="section-header">
+            <h2>Flashcard Deck</h2>
+            <p>Flip through key concepts — mark as "Know it" or "Still learning"</p>
+        </div>
+        <div class="flashcard-container" id="flashcard-container"></div>
+    </section>
+
+    <!-- ==================== PROGRESS DASHBOARD ==================== -->
+    <section id="section-progress" class="section">
+        <div class="section-header">
+            <h2>Progress Dashboard</h2>
+            <p>Track your mastery across all study modes</p>
+        </div>
+        <div class="dashboard-grid" id="dashboard-grid"></div>
+    </section>
+
+</main>
+
+<script>
+// ==================== DATA ====================
+const matrixData = [
+    {
+        feature: "Always On Availability Groups (AG)",
+        iaas: true, paasDb: false, paasMi: false,
+        failover: "Automatic / Manual",
+        rpo: "0 (sync) or seconds (async)",
+        rto: "Seconds to minutes",
+        readScale: "Yes — up to 8 secondaries",
+        platforms: ["iaas"]
+    },
+    {
+        feature: "Failover Cluster Instance (FCI)",
+        iaas: true, paasDb: false, paasMi: false,
+        failover: "Automatic",
+        rpo: "0 (shared storage)",
+        rto: "Seconds to minutes",
+        readScale: "No",
+        platforms: ["iaas"]
+    },
+    {
+        feature: "Distributed Availability Groups (DAG)",
+        iaas: true, paasDb: false, paasMi: false,
+        failover: "Manual",
+        rpo: "Seconds (async recommended; sync supported)",
+        rto: "Minutes",
+        readScale: "Yes (if readable secondaries configured)",
+        platforms: ["iaas"]
+    },
+    {
+        feature: "Windows Server Failover Cluster (WSFC)",
+        iaas: true, paasDb: false, paasMi: false,
+        failover: "Automatic (infrastructure layer)",
+        rpo: "N/A (infra, not data replication)",
+        rto: "Seconds",
+        readScale: "N/A",
+        platforms: ["iaas"]
+    },
+    {
+        feature: "Auto-Failover Groups",
+        iaas: false, paasDb: true, paasMi: true,
+        failover: "Automatic / Manual",
+        rpo: "≤ 5 seconds (async geo-replication)",
+        rto: "Typically < 60 seconds (once triggered)",
+        readScale: "Yes — readable secondary region",
+        platforms: ["paas-db", "paas-mi"]
+    },
+    {
+        feature: "Active Geo-Replication",
+        iaas: false, paasDb: true, paasMi: false,
+        failover: "Manual only",
+        rpo: "≤ 5 seconds",
+        rto: "< 30 seconds",
+        readScale: "Yes — up to 4 readable secondaries",
+        platforms: ["paas-db"]
+    },
+    {
+        feature: "Zone-Redundant Configuration",
+        iaas: false, paasDb: true, paasMi: true,
+        failover: "Automatic (transparent)",
+        rpo: "0 (synchronous within region)",
+        rto: "Seconds (transparent to app)",
+        readScale: "Tier-dependent",
+        platforms: ["paas-db", "paas-mi"]
+    },
+    {
+        feature: "Built-in HA (Platform Managed)",
+        iaas: false, paasDb: true, paasMi: true,
+        failover: "Automatic (transparent)",
+        rpo: "0",
+        rto: "Seconds (Business Critical) / Minutes (GP)",
+        readScale: "Business Critical & Hyperscale only",
+        platforms: ["paas-db", "paas-mi"]
+    },
+    {
+        feature: "Log Shipping",
+        iaas: true, paasDb: false, paasMi: false,
+        failover: "Manual",
+        rpo: "Minutes to hours (depends on schedule)",
+        rto: "Minutes to hours",
+        readScale: "Yes (standby mode)",
+        platforms: ["iaas"]
+    },
+    {
+        feature: "Database Mirroring (Deprecated)",
+        iaas: true, paasDb: false, paasMi: false,
+        failover: "Automatic (high-safety) / Manual",
+        rpo: "0 (sync) or seconds (async)",
+        rto: "Seconds",
+        readScale: "Yes (database snapshots on mirror)",
+        platforms: ["iaas"]
+    },
+    {
+        feature: "Point-in-Time Restore (PITR)",
+        iaas: false, paasDb: true, paasMi: true,
+        failover: "N/A (restore operation)",
+        rpo: "~10 minutes (log backup frequency)",
+        rto: "Minutes to hours (depends on size)",
+        readScale: "N/A",
+        platforms: ["paas-db", "paas-mi"]
+    },
+    {
+        feature: "Geo-Restore (from geo-redundant backup)",
+        iaas: false, paasDb: true, paasMi: true,
+        failover: "N/A (restore operation)",
+        rpo: "Up to 1 hour",
+        rto: "Hours (up to 12h for large DBs)",
+        readScale: "N/A",
+        platforms: ["paas-db", "paas-mi"]
+    }
+];
+
+const techData = [
+    {
+        name: "Always On Availability Groups (AG)",
+        platform: "iaas",
+        platformLabel: "SQL Server on VM",
+        desc: "Enterprise-grade HA/DR solution that replicates a group of databases to secondary replicas using synchronous or asynchronous commit.",
+        stats: { rpo: "0 (sync) / Seconds (async)", rto: "Seconds–Minutes", maxReplicas: "Up to 9 (5 sync)", failover: "Automatic or Manual" },
+        detail: `<strong>How it works:</strong> Creates a group of databases that fail over together. Uses WSFC underneath. Primary replica handles writes; secondaries receive transaction log records.<br><br>
+        <strong>Key points:</strong><br>
+        • Requires Windows Server Failover Clustering (WSFC) or Linux Pacemaker<br>
+        • Synchronous commit = zero data loss but adds latency<br>
+        • Asynchronous commit = better performance for remote replicas but potential data loss<br>
+        • Supports readable secondaries for offloading reporting/backups<br>
+        • Listener provides single connection endpoint for client applications<br>
+        • SQL Server 2017+ supports clusterless AG (no WSFC) for read-scale<br><br>
+        <strong>When to use:</strong> SQL Server on Azure VMs or on-premises needing HA with readable secondaries and grouped failover.`
+    },
+    {
+        name: "Failover Cluster Instance (FCI)",
+        platform: "iaas",
+        platformLabel: "SQL Server on VM",
+        desc: "Instance-level HA using shared storage. The entire SQL Server instance fails over to another node in the cluster.",
+        stats: { rpo: "0 (shared storage)", rto: "Seconds–Minutes", maxReplicas: "N/A (shared instance)", failover: "Automatic" },
+        detail: `<strong>How it works:</strong> Multiple nodes share the same database storage. Only one node is active at a time; if it fails, another node takes ownership of the shared storage and starts the SQL instance.<br><br>
+        <strong>Key points:</strong><br>
+        • Requires WSFC + shared storage (Azure Shared Disks, Storage Spaces Direct, or premium file shares)<br>
+        • Single copy of data — no data replication overhead<br>
+        • Instance-level failover (all databases on the instance fail over together)<br>
+        • Does NOT protect against storage failures (single point of failure for data)<br>
+        • Cannot have readable secondaries (only one active node)<br>
+        • Often combined with AG for both local HA and remote DR<br><br>
+        <strong>When to use:</strong> Instance-level HA requirement with shared storage; often the HA layer under an AG for full HA+DR coverage.`
+    },
+    {
+        name: "Distributed Availability Groups (DAG)",
+        platform: "iaas",
+        platformLabel: "SQL Server on VM",
+        desc: "Connects two separate Availability Groups (each on their own WSFC) for cross-cluster, cross-region disaster recovery.",
+        stats: { rpo: "Seconds (typically async)", rto: "Minutes (manual failover)", maxReplicas: "2 AGs linked", failover: "Manual only" },
+        detail: `<strong>How it works:</strong> A DAG spans two independent AGs (each has its own WSFC). The forwarder replica in AG1 sends log records to the primary of AG2. Supports both synchronous and asynchronous data movement (async recommended for DR).<br><br>
+        <strong>Key points:</strong><br>
+        • Each AG is independent — separate WSFCs, potentially different domains or OS versions<br>
+        • Does NOT require shared WSFC between sites<br>
+        • Supports both sync and async data movement (async recommended for DR scenarios)<br>
+        • Available from SQL Server 2016<br>
+        • Useful for migrations (upgrade with minimal downtime via DAG failover)<br>
+        • Can span on-premises to Azure or Azure region to Azure region<br><br>
+        <strong>When to use:</strong> Cross-datacenter/cross-region DR for SQL Server, or zero-downtime OS/version migration between clusters.`
+    },
+    {
+        name: "Windows Server Failover Cluster (WSFC)",
+        platform: "iaas",
+        platformLabel: "SQL Server on VM",
+        desc: "The underlying Windows infrastructure that provides clustering services for AGs and FCIs. Not a SQL feature itself.",
+        stats: { rpo: "N/A (infrastructure)", rto: "Seconds", maxReplicas: "N/A", failover: "Automatic (cluster layer)" },
+        detail: `<strong>How it works:</strong> WSFC provides heartbeat monitoring, quorum voting, IP resource management, and automatic failover coordination for clustered services.<br><br>
+        <strong>Key points:</strong><br>
+        • Required foundation for Always On AGs and FCIs (on Windows)<br>
+        • Manages quorum (node majority, disk witness, cloud witness)<br>
+        • Cloud Witness (Azure Storage Blob) is recommended for Azure VMs<br>
+        • Does NOT replicate data — just orchestrates failover<br>
+        • Linux alternative: Pacemaker with Corosync<br>
+        • Multi-subnet WSFC common for Azure deployments<br><br>
+        <strong>When to use:</strong> Always — whenever you deploy AGs or FCIs on Windows.`
+    },
+    {
+        name: "Auto-Failover Groups",
+        platform: "both",
+        platformLabel: "SQL DB + Managed Instance",
+        desc: "Azure-managed feature that groups databases for geo-replication with automatic failover and listener endpoints across regions.",
+        stats: { rpo: "≤ 5 seconds", rto: "Typically < 60 seconds", maxReplicas: "1 secondary region", failover: "Automatic + Manual" },
+        detail: `<strong>How it works:</strong> Creates a logical group of databases replicated asynchronously to a paired secondary region. Provides read-write and read-only listener endpoints that automatically redirect after failover.<br><br>
+        <strong>Key points:</strong><br>
+        • Available for both Azure SQL Database and Managed Instance<br>
+        • Provides listener endpoints (no connection string changes needed on failover)<br>
+        • Grace period configurable (GracePeriodWithDataLossHours)<br>
+        • Groups multiple databases — all fail over together<br>
+        • Supports forced failover (with data loss) and planned failover (no data loss)<br>
+        • Built on top of active geo-replication technology<br><br>
+        <strong>When to use:</strong> Multi-database applications on Azure SQL that need automatic geo-DR with seamless connection routing.`
+    },
+    {
+        name: "Active Geo-Replication",
+        platform: "paas-db",
+        platformLabel: "SQL Database only",
+        desc: "Per-database asynchronous replication to up to 4 readable secondaries in any Azure region. Manual failover only.",
+        stats: { rpo: "≤ 5 seconds", rto: "< 30 seconds", maxReplicas: "Up to 4 geo-secondaries", failover: "Manual only" },
+        detail: `<strong>How it works:</strong> Continuously replicates committed transactions from a primary database to up to 4 secondary databases in different Azure regions using asynchronous replication.<br><br>
+        <strong>Key points:</strong><br>
+        • Azure SQL Database ONLY (not Managed Instance)<br>
+        • Per-database (not grouped — each DB managed independently)<br>
+        • No listener endpoints — app must handle connection changes<br>
+        • Secondaries are readable (offload read workloads)<br>
+        • Can chain secondaries (secondary of a secondary)<br>
+        • Manual failover via portal, PowerShell, or REST API<br><br>
+        <strong>When to use:</strong> Single-database DR scenarios, read-scale across regions, or when you need more than one geo-secondary.`
+    },
+    {
+        name: "Zone-Redundant Configuration",
+        platform: "both",
+        platformLabel: "SQL DB + Managed Instance",
+        desc: "Distributes replicas across Azure Availability Zones within the same region for protection against datacenter-level failures.",
+        stats: { rpo: "0 (synchronous)", rto: "Seconds (transparent)", maxReplicas: "Tier-dependent", failover: "Automatic (transparent)" },
+        detail: `<strong>How it works:</strong> Spreads database replicas across physically separate datacenters (Availability Zones) within one Azure region. If one zone fails, other zones continue serving the workload.<br><br>
+        <strong>Key points:</strong><br>
+        • Available for General Purpose, Business Critical, and Hyperscale tiers<br>
+        • Transparent to the application — no connection string changes<br>
+        • Provides local HA (within region) not geo-DR (cross-region)<br>
+        • Small additional latency due to cross-zone synchronous replication<br>
+        • Often combined with Failover Groups for full HA+DR strategy<br><br>
+        <strong>When to use:</strong> Protect against zone/datacenter failures within a region. Combine with geo-replication for comprehensive BCDR.`
+    },
+    {
+        name: "Log Shipping",
+        platform: "iaas",
+        platformLabel: "SQL Server on VM",
+        desc: "Legacy DR technique that ships transaction log backups from primary to secondary servers on a scheduled basis.",
+        stats: { rpo: "Minutes–Hours (schedule dependent)", rto: "Minutes–Hours", maxReplicas: "Multiple secondaries", failover: "Manual" },
+        detail: `<strong>How it works:</strong> Automated process: (1) Back up transaction log on primary, (2) Copy backup file to secondary server, (3) Restore backup on secondary. Runs on a schedule (e.g., every 15 minutes).<br><br>
+        <strong>Key points:</strong><br>
+        • Simple to set up, minimal requirements<br>
+        • Secondary can be in standby (read-only) or norecovery mode<br>
+        • RPO depends on backup schedule frequency<br>
+        • Works across domains, networks — just needs file share access<br>
+        • No automatic failover — requires manual intervention<br>
+        • Often used as a supplement to AGs for additional DR copies<br><br>
+        <strong>When to use:</strong> Simple DR for SQL Server when AGs are not possible, or as an additional DR copy.`
+    },
+    {
+        name: "Database Mirroring (Deprecated)",
+        platform: "iaas",
+        platformLabel: "SQL Server on VM (Legacy)",
+        desc: "Deprecated per-database HA feature. Maintains a standby copy via synchronous or asynchronous log record shipping.",
+        stats: { rpo: "0 (sync) / Seconds (async)", rto: "Seconds", maxReplicas: "1 mirror + 1 witness", failover: "Automatic (high-safety) / Manual" },
+        detail: `<strong>How it works:</strong> Ships log records from principal to mirror database in real-time. High-safety mode = synchronous with automatic failover (requires witness). High-performance = asynchronous.<br><br>
+        <strong>Key points:</strong><br>
+        • DEPRECATED — removed in future SQL Server versions<br>
+        • Per-database only (no grouped failover)<br>
+        • Witness server enables automatic failover in high-safety mode<br>
+        • Mirror is not readable (only via database snapshots)<br>
+        • Predecessor to Always On AGs — AGs are the recommended replacement<br>
+        • Still testable on DP-300 as awareness topic<br><br>
+        <strong>When to use:</strong> Legacy systems only. For new deployments, use Always On AGs instead.`
+    },
+    {
+        name: "Point-in-Time Restore (PITR)",
+        platform: "both",
+        platformLabel: "SQL DB + Managed Instance",
+        desc: "Azure-managed backup feature allowing restore to any point within the retention period (1-35 days default).",
+        stats: { rpo: "~10 minutes (log backup frequency)", rto: "Minutes–Hours", maxReplicas: "N/A (restore)", failover: "N/A (recovery operation)" },
+        detail: `<strong>How it works:</strong> Azure automatically takes full backups (weekly), differential backups (every 12-24h), and transaction log backups (approximately every 10 minutes). You can restore to any second within the retention window.<br><br>
+        <strong>Key points:</strong><br>
+        • Fully automated — no manual backup management needed<br>
+        • Default retention: 7 days, configurable up to 35 days<br>
+        • Long-term retention (LTR) available for years of retention<br>
+        • Restores to a NEW database (cannot restore in-place)<br>
+        • Restore time depends on database size<br>
+        • Geo-redundant backups enable cross-region restore (geo-restore)<br><br>
+        <strong>When to use:</strong> Accidental data deletion/corruption recovery, compliance retention requirements.`
+    }
+];
+
+const quizData = [
+    {
+        category: "Platform Mapping",
+        question: "A company is migrating their SQL Server databases to Azure SQL Managed Instance. They need cross-region disaster recovery with automatic failover. Which feature should they configure?",
+        options: ["Always On Availability Groups", "Active Geo-Replication", "Auto-Failover Groups", "Distributed Availability Groups"],
+        correct: 2,
+        explanation: "Auto-Failover Groups are available for both Azure SQL Database and Managed Instance, providing automatic geo-failover with listener endpoints. Active Geo-Replication is only for Azure SQL Database (not MI). AGs and DAGs are for SQL Server on VMs (IaaS) only."
+    },
+    {
+        category: "Technology Differences",
+        question: "What is the key difference between Active Geo-Replication and Auto-Failover Groups in Azure SQL Database?",
+        options: [
+            "Active Geo-Replication supports automatic failover, Failover Groups do not",
+            "Failover Groups provide listener endpoints and automatic failover; Active Geo-Replication requires manual failover with no listener",
+            "Active Geo-Replication works with Managed Instance; Failover Groups do not",
+            "There is no difference — they are the same feature"
+        ],
+        correct: 1,
+        explanation: "Auto-Failover Groups provide listener endpoints (read-write and read-only) that automatically redirect connections after failover, and support automatic failover. Active Geo-Replication requires manual failover and has no listener endpoints — the application must manage connection string changes."
+    },
+    {
+        category: "RPO/RTO",
+        question: "A company requires RPO of exactly 0 (zero data loss) for their Azure SQL Database. Which deployment configuration achieves this within a single region?",
+        options: [
+            "Active Geo-Replication to another region",
+            "Auto-Failover Groups with grace period set to 0",
+            "Business Critical tier with zone-redundant configuration",
+            "General Purpose tier with geo-redundant backups"
+        ],
+        correct: 2,
+        explanation: "Business Critical tier uses synchronous replication (Always On AG technology underneath) providing RPO=0. Zone redundancy spreads replicas across availability zones for datacenter-level protection. Geo-replication is asynchronous (RPO ≤ 5s). Geo-redundant backups have RPO up to 1 hour."
+    },
+    {
+        category: "Architecture",
+        question: "Which Azure SQL Database service tier uses a separated compute and storage architecture where failover involves attaching remote storage to a new compute node?",
+        options: ["Business Critical", "General Purpose", "Hyperscale", "Premium"],
+        correct: 1,
+        explanation: "General Purpose tier separates compute and storage. On failure, a new compute node is provisioned and attaches to the existing remote Azure Premium Storage. This results in longer failover times (minutes) compared to Business Critical (seconds) which keeps data on local SSDs with synchronous replicas."
+    },
+    {
+        category: "Infrastructure",
+        question: "What is the role of Windows Server Failover Clustering (WSFC) in a SQL Server Always On Availability Group deployment?",
+        options: [
+            "WSFC replicates the database data between nodes",
+            "WSFC provides the underlying cluster infrastructure for heartbeat, quorum, and failover orchestration",
+            "WSFC is optional and only needed for automatic failover",
+            "WSFC manages the backup and restore process"
+        ],
+        correct: 1,
+        explanation: "WSFC provides the cluster infrastructure: heartbeat monitoring, quorum management (determining which nodes are alive), resource group management, and failover orchestration. It does NOT replicate data — that's done by the AG itself via log record shipping. WSFC is required for AGs on Windows (Linux uses Pacemaker)."
+    },
+    {
+        category: "Platform Mapping",
+        question: "Which HADR technologies require you to configure and manage Windows Server Failover Clustering? (Choose the best answer)",
+        options: [
+            "Auto-Failover Groups and Active Geo-Replication",
+            "Always On AGs and Failover Cluster Instances on SQL Server VMs",
+            "Zone-Redundant Configuration and Built-in HA",
+            "Log Shipping and Database Mirroring"
+        ],
+        correct: 1,
+        explanation: "Always On Availability Groups and Failover Cluster Instances both require WSFC as their underlying cluster infrastructure (on Windows). PaaS features (Failover Groups, Geo-Replication, Zone Redundancy) are fully Azure-managed and don't require WSFC. Log Shipping and Database Mirroring work without WSFC."
+    },
+    {
+        category: "Scenario",
+        question: "A global e-commerce company runs Azure SQL Database with multiple databases that must fail over together. They need automatic failover with no application connection string changes. What should they implement?",
+        options: [
+            "Active Geo-Replication for each database individually",
+            "Auto-Failover Groups",
+            "Zone-Redundant Configuration",
+            "Geo-Restore from geo-redundant backups"
+        ],
+        correct: 1,
+        explanation: "Auto-Failover Groups group multiple databases to fail over together, provide automatic failover, and offer listener endpoints (read-write and read-only) so applications don't need connection string changes after failover. Active Geo-Replication is per-database with manual failover and no listeners."
+    },
+    {
+        category: "Technology Differences",
+        question: "What distinguishes a Distributed Availability Group (DAG) from a standard Always On Availability Group?",
+        options: [
+            "A DAG operates within a single WSFC cluster",
+            "A DAG connects two independent AGs across separate WSFC clusters",
+            "A DAG is an Azure PaaS feature for Managed Instance",
+            "A DAG only supports asynchronous replication"
+        ],
+        correct: 1,
+        explanation: "A Distributed Availability Group links two separate AGs (each with its own WSFC) for cross-cluster, cross-region disaster recovery. Unlike a regular AG which operates within a single WSFC, a DAG spans independent clusters. DAGs support both synchronous and asynchronous data movement (async is recommended for DR scenarios), and only manual failover is supported."
+    },
+    {
+        category: "RPO/RTO",
+        question: "Rank these from BEST (lowest) RPO to WORST (highest) RPO: 1) Geo-Restore, 2) Auto-Failover Groups, 3) Business Critical built-in HA, 4) Point-in-Time Restore",
+        options: [
+            "3 → 2 → 4 → 1 (Built-in HA → Failover Groups → PITR → Geo-Restore)",
+            "2 → 3 → 1 → 4 (Failover Groups → Built-in → Geo-Restore → PITR)",
+            "1 → 2 → 3 → 4 (Geo-Restore → Failover Groups → Built-in → PITR)",
+            "3 → 4 → 2 → 1 (Built-in → PITR → Failover Groups → Geo-Restore)"
+        ],
+        correct: 0,
+        explanation: "Built-in HA (Business Critical) = RPO 0 (synchronous). Auto-Failover Groups = RPO ≤ 5 seconds (asynchronous geo). PITR = RPO ~10 minutes (log backup frequency). Geo-Restore = RPO up to 1 hour (geo-redundant backup lag). The ranking is 0 → ≤5s → ~10min → up to 1h."
+    },
+    {
+        category: "Scenario",
+        question: "Your company runs SQL Server on Azure VMs across two Azure regions. The regions have separate Active Directory domains. You need DR replication between them. What should you use?",
+        options: [
+            "Always On Availability Group with multi-subnet WSFC spanning both regions",
+            "Distributed Availability Group (DAG)",
+            "Auto-Failover Groups",
+            "Log Shipping"
+        ],
+        correct: 1,
+        explanation: "Distributed Availability Groups are designed for this exact scenario — linking two separate AGs in different clusters (different domains allowed). A single WSFC spanning different domains is complex/unsupported. Auto-Failover Groups are PaaS only. While log shipping works, DAG provides better RPO and is the recommended solution. DAGs support both sync and async data movement and are available from SQL Server 2016."
+    },
+    {
+        category: "Architecture",
+        question: "How does the Hyperscale service tier achieve fast failover despite supporting databases up to 128 TB?",
+        options: [
+            "It uses synchronous replication to 3 replicas like Business Critical",
+            "It uses separated stateless compute and distributed page servers — any compute node can quickly attach",
+            "It pre-warms a standby compute node with the full dataset in memory",
+            "It uses database mirroring technology under the hood"
+        ],
+        correct: 1,
+        explanation: "Hyperscale uses a unique architecture with stateless compute nodes and distributed page servers (storage layer). Since compute is stateless, a new compute node can quickly take over by connecting to the same page servers — no need to copy 128TB of data. This enables fast recovery regardless of database size."
+    },
+    {
+        category: "Platform Mapping",
+        question: "Which statement about Active Geo-Replication is TRUE?",
+        options: [
+            "It works with Azure SQL Database and Managed Instance",
+            "It provides up to 4 readable secondaries in any Azure region, but only for Azure SQL Database",
+            "It provides automatic failover with listener endpoints",
+            "It supports synchronous replication for zero data loss"
+        ],
+        correct: 1,
+        explanation: "Active Geo-Replication is Azure SQL Database ONLY (not Managed Instance). It supports up to 4 readable geo-secondaries. It does NOT have listener endpoints (that's Failover Groups). It uses asynchronous replication only (RPO ≤ 5 seconds, not zero)."
+    },
+    {
+        category: "Infrastructure",
+        question: "What is a Cloud Witness in the context of WSFC for SQL Server on Azure VMs?",
+        options: [
+            "An Azure SQL Database that stores cluster configuration",
+            "An Azure Storage Blob used as a quorum witness for cluster voting",
+            "A virtual machine that monitors cluster health from another region",
+            "A feature of Azure Monitor that alerts on cluster failures"
+        ],
+        correct: 1,
+        explanation: "Cloud Witness uses an Azure Storage Blob as the quorum witness for WSFC. It provides an independent vote in the cluster quorum, preventing split-brain scenarios. It's the recommended witness type for Azure VM deployments because it doesn't require a separate witness VM or shared disk."
+    },
+    {
+        category: "Scenario",
+        question: "A financial services company needs their Azure SQL Database to survive a complete Azure region outage with less than 1 hour RTO. They have a multi-database application. What is the recommended approach?",
+        options: [
+            "Configure zone-redundant deployment",
+            "Use geo-restore from geo-redundant backups",
+            "Configure Auto-Failover Groups to a secondary region",
+            "Set up Active Geo-Replication for each database"
+        ],
+        correct: 2,
+        explanation: "Auto-Failover Groups provide: (1) multi-database grouped failover, (2) RTO typically under 60 seconds once triggered, (3) automatic failover on region outage. Zone redundancy only protects within a region. Geo-restore has RTO of hours. Active Geo-Replication is per-database with manual failover."
+    },
+    {
+        category: "Technology Differences",
+        question: "What is a key limitation of Failover Cluster Instances (FCI) compared to Always On Availability Groups?",
+        options: [
+            "FCI cannot provide automatic failover",
+            "FCI does not support readable secondaries — only one active node at a time",
+            "FCI requires more expensive Enterprise edition",
+            "FCI cannot be deployed on Azure VMs"
+        ],
+        correct: 1,
+        explanation: "FCI uses shared storage with only one active node at a time — there are no readable secondaries. AGs support up to 8 readable secondary replicas. FCI does provide automatic failover and can use Standard edition. Both can be deployed on Azure VMs."
+    },
+    {
+        category: "RPO/RTO",
+        question: "An application can tolerate up to 5 minutes of data loss but needs RTO under 30 seconds. The database is Azure SQL Database. Which option is MOST appropriate?",
+        options: [
+            "General Purpose tier with zone redundancy",
+            "Business Critical tier (built-in HA handles everything)",
+            "Active Geo-Replication (manual failover, RPO ≤ 5s, RTO < 30s)",
+            "Auto-Failover Groups (RPO ≤ 5s, RTO typically < 60s)"
+        ],
+        correct: 2,
+        explanation: "Active Geo-Replication offers RPO ≤ 5 seconds and RTO < 30 seconds (for promoting a secondary). While it requires manual failover, it meets both the RPO (5 min tolerance, achieves ≤5s) and RTO (<30s) requirements. Auto-Failover Groups typically complete in < 60 seconds but may not guarantee < 30s. Built-in HA protects against node failure but not region failure."
+    },
+    {
+        category: "Backup Strategy",
+        question: "Which backup types does Azure automatically perform for Azure SQL Database and Managed Instance?",
+        options: [
+            "Full backups only, on a weekly schedule",
+            "Full (weekly), Differential (every 12-24h), and Transaction Log (every 5-10 min)",
+            "Full (daily) and Transaction Log (hourly)",
+            "No automated backups — you must configure them manually"
+        ],
+        correct: 1,
+        explanation: "Azure automatically takes: Full backups (weekly), Differential backups (every 12-24 hours), and Transaction Log backups (approximately every 10 minutes). This enables point-in-time restore to any second within the retention period. No manual backup management is needed for PaaS services."
+    },
+    {
+        category: "Scenario",
+        question: "You need to migrate a SQL Server 2016 Always On AG from on-premises to Azure VMs with minimal downtime. The on-premises cluster runs Windows Server 2016 and the Azure VMs run Windows Server 2022. What approach minimizes downtime?",
+        options: [
+            "Backup and restore with log shipping to catch up",
+            "Set up a Distributed Availability Group between the on-premises AG and a new AG on Azure VMs",
+            "Use database mirroring between on-prem and Azure",
+            "Use Azure Database Migration Service"
+        ],
+        correct: 1,
+        explanation: "Distributed Availability Groups are ideal for this scenario because they: (1) connect independent clusters (different OS versions allowed), (2) don't require shared WSFC between sites, (3) replicate data continuously, and (4) allow a fast planned failover with minimal downtime. DAGs support cross-version and cross-OS migration."
+    },
+    {
+        category: "Architecture",
+        question: "In the Business Critical service tier, how many synchronous replicas are maintained and how many are readable?",
+        options: [
+            "1 replica, 0 readable",
+            "3 secondary replicas, 1 readable",
+            "4 secondary replicas, all readable",
+            "2 replicas, both readable"
+        ],
+        correct: 1,
+        explanation: "Business Critical tier maintains 3 secondary replicas using synchronous replication (Always On AG technology). One of these replicas is exposed as a readable secondary via the read-only listener endpoint. This provides both high availability (RPO=0) and read scale-out capability."
+    },
+    {
+        category: "Platform Mapping",
+        question: "A DBA wants to set up log shipping for their Azure SQL Managed Instance. Is this possible?",
+        options: [
+            "Yes — log shipping is available on all SQL platforms",
+            "No — log shipping is only available for SQL Server on VMs (IaaS), not PaaS services",
+            "Yes — but only between two Managed Instances in the same region",
+            "No — but you can use database mirroring instead on Managed Instance"
+        ],
+        correct: 1,
+        explanation: "Log shipping is a SQL Server feature that requires OS-level access for backup file copying and job scheduling. It's only available on SQL Server on VMs (IaaS) or on-premises. PaaS services (Azure SQL DB and MI) don't support log shipping — use Failover Groups or Geo-Replication instead."
+    },
+    {
+        category: "Backup Strategy",
+        question: "What is the difference between Point-in-Time Restore (PITR) and Long-Term Retention (LTR) in Azure SQL?",
+        options: [
+            "PITR is for the last 1-35 days with granular recovery; LTR stores full backups for up to 10 years for compliance",
+            "PITR is for Managed Instance only; LTR is for SQL Database only",
+            "They are the same feature with different names",
+            "PITR requires manual backup configuration; LTR is automatic"
+        ],
+        correct: 0,
+        explanation: "PITR enables restore to any point within the short-term retention window (1-35 days) using full + differential + log backups. LTR copies full backups to separate storage for long-term compliance retention (up to 10 years), configurable on weekly/monthly/yearly schedules. Both are available for SQL DB and MI."
+    },
+    {
+        category: "Technology Differences",
+        question: "Which statement correctly describes the quorum model in WSFC for Azure VM deployments?",
+        options: [
+            "Azure VMs always use disk witness for quorum",
+            "Cloud Witness (Azure Storage Blob) is the recommended quorum witness for Azure deployments",
+            "Quorum is not needed when running WSFC in Azure",
+            "Azure automatically manages quorum — no configuration needed"
+        ],
+        correct: 1,
+        explanation: "Cloud Witness uses an Azure Blob Storage account as the quorum witness. It's recommended for Azure because it doesn't require a separate witness VM, works across regions, and provides an independent arbitration point. File share witness and disk witness are less suitable for cloud deployments."
+    }
+];
+
+const flashcardData = [
+    { category: "Technologies", front: "What does AG stand for and what is its primary purpose?", back: "Always On Availability Group — provides HA/DR by replicating a group of databases to secondary replicas. Supports synchronous (zero data loss) and asynchronous commit modes. Requires WSFC on Windows." },
+    { category: "Technologies", front: "What is a Failover Cluster Instance (FCI)?", back: "Instance-level HA using shared storage. Only one node is active at a time. If it fails, another WSFC node takes ownership of the shared storage. Does NOT provide readable secondaries." },
+    { category: "Technologies", front: "What is a Distributed Availability Group (DAG)?", back: "Links two separate AGs (each with its own WSFC) for cross-cluster replication. Supports both sync and async data movement (async recommended for DR). Supports cross-domain, cross-OS-version. Available from SQL Server 2016. Ideal for migrations and multi-region DR." },
+    { category: "Technologies", front: "What is WSFC and why is it required?", back: "Windows Server Failover Clustering — the underlying infrastructure for AGs and FCIs. Provides heartbeat, quorum, and failover orchestration. Does NOT replicate data. Linux alternative: Pacemaker." },
+    { category: "Technologies", front: "What are Auto-Failover Groups?", back: "Azure PaaS feature for SQL DB and MI. Groups databases for geo-replication with automatic failover and listener endpoints (read-write + read-only). RPO ≤ 5s, RTO typically < 60 seconds once triggered. Grace period (≥1 hr) configurable before auto-failover triggers." },
+    { category: "Technologies", front: "What is Active Geo-Replication?", back: "Azure SQL Database ONLY feature. Per-database async replication to up to 4 readable secondaries. Manual failover only. No listener endpoints. RPO ≤ 5 seconds." },
+    { category: "Technologies", front: "What is Zone-Redundant Configuration?", back: "Spreads replicas across Azure Availability Zones within ONE region. Provides protection against datacenter failure. Transparent to applications. Does NOT protect against region failure." },
+    { category: "Technologies", front: "What is Log Shipping?", back: "Legacy IaaS-only DR: automatically backs up transaction logs, copies to secondary, restores on schedule. Manual failover. RPO depends on schedule frequency. Simple but limited." },
+    { category: "Technologies", front: "What is Database Mirroring?", back: "DEPRECATED per-database HA. Ships log records to a mirror in real-time. High-safety mode = sync with auto-failover (needs witness). Replaced by Always On AGs." },
+    { category: "Platform Mapping", front: "Which HADR features are available for Azure SQL Managed Instance?", back: "Auto-Failover Groups, Zone-Redundant Configuration, Built-in HA, and PITR/Geo-Restore. NOT available: Active Geo-Replication, AGs, FCIs, DAGs, Log Shipping, DB Mirroring." },
+    { category: "Platform Mapping", front: "Which HADR features are exclusive to Azure SQL Database (not MI)?", back: "Active Geo-Replication (up to 4 readable secondaries, manual failover, per-database). This is the only feature available on SQL DB but NOT Managed Instance." },
+    { category: "Platform Mapping", front: "Which HADR features require SQL Server on Azure VMs (IaaS)?", back: "Always On AGs, FCIs, DAGs, WSFC, Log Shipping, and Database Mirroring. These all require OS-level access and/or WSFC infrastructure not available in PaaS." },
+    { category: "Platform Mapping", front: "Can you configure Always On AGs on Azure SQL Managed Instance?", back: "NO. MI uses AG technology under the hood for built-in HA, but you cannot create or manage your own AGs. Use Auto-Failover Groups for geo-DR instead." },
+    { category: "Platform Mapping", front: "What HADR options exist for Azure SQL Database General Purpose tier?", back: "Remote storage redundancy (LRS/ZRS), zone-redundant configuration, Active Geo-Replication, Auto-Failover Groups, PITR, and Geo-Restore. No readable replicas within the tier itself." },
+    { category: "Concepts", front: "Define RPO (Recovery Point Objective)", back: "Maximum acceptable amount of data loss measured in time. E.g., RPO of 5 minutes = you can afford to lose up to 5 minutes of transactions. Lower RPO = more expensive solutions needed." },
+    { category: "Concepts", front: "Define RTO (Recovery Time Objective)", back: "Maximum acceptable downtime — how quickly you must recover. E.g., RTO of 10 minutes = DB must be online within 10 minutes of failure. Lower RTO = requires automated failover and pre-provisioned resources." },
+    { category: "Concepts", front: "Synchronous vs. Asynchronous replication?", back: "Synchronous: Transaction commits only after secondary acknowledges. RPO=0 but adds latency. | Asynchronous: Primary commits without waiting for secondary. Better performance but potential data loss." },
+    { category: "Concepts", front: "What is a quorum in WSFC?", back: "A voting mechanism to determine if the cluster has enough members to stay online. Prevents split-brain. Types: Node Majority, Node + Disk Witness, Node + File Share Witness, Cloud Witness." },
+    { category: "Concepts", front: "What is Cloud Witness?", back: "An Azure Storage Blob used as quorum witness for WSFC. Recommended for Azure VM deployments. Provides independent arbitration without needing a witness VM or shared disk." },
+    { category: "Concepts", front: "What is a Listener in AG/Failover Group context?", back: "A virtual network name (VNN) or DNS endpoint that clients connect to. Automatically routes to the current primary. Eliminates need for connection string changes on failover." },
+    { category: "Concepts", front: "What is Read Scale-Out?", back: "Ability to offload read-only queries to secondary replicas. Available in: AG secondaries, Business Critical readable replica, Hyperscale named replicas, Active Geo-Replication secondaries, Failover Group secondary." },
+    { category: "RPO/RTO", front: "RPO of Always On AG with synchronous commit?", back: "RPO = 0 (zero data loss). Every transaction is committed on both primary and secondary before being acknowledged to the client. Trade-off: added latency." },
+    { category: "RPO/RTO", front: "RPO and RTO of Auto-Failover Groups?", back: "RPO ≤ 5 seconds (async geo-replication). RTO typically < 60 seconds once failover triggers. The grace period (GracePeriodWithDataLossHours, default 1 hr) is how long Azure waits BEFORE triggering — not the failover duration itself." },
+    { category: "RPO/RTO", front: "RPO of Geo-Restore?", back: "Up to 1 hour. Geo-redundant backups are replicated asynchronously to a paired region with up to 1-hour lag. This is the WORST RPO of all Azure SQL HADR options." },
+    { category: "RPO/RTO", front: "RPO of Point-in-Time Restore (PITR)?", back: "Approximately 10 minutes. Based on transaction log backup frequency (~every 10 minutes). Restores to a new database — not in-place." },
+    { category: "RPO/RTO", front: "RTO comparison: General Purpose vs. Business Critical failover?", back: "General Purpose: Minutes (new compute attaches to remote storage). Business Critical: Seconds (promotes a synchronous replica with local SSD data). Hyperscale: Seconds (stateless compute reconnects)." },
+    { category: "RPO/RTO", front: "What RPO/RTO does zone-redundant configuration provide?", back: "RPO = 0 (synchronous replication across zones). RTO = Seconds (transparent automatic failover). Protects against zone failure, NOT region failure." },
+    { category: "Concepts", front: "What Azure SQL backup types are automated?", back: "Full (weekly), Differential (12-24h), Transaction Log (~every 10 min). All automatic for SQL DB and MI. Enables PITR within retention window (1-35 days configurable, default 7)." },
+    { category: "Concepts", front: "What is Long-Term Retention (LTR)?", back: "Stores full backups for up to 10 years in Azure Blob Storage. For compliance/regulatory requirements. Configurable weekly/monthly/yearly retention. Available for both SQL DB and MI." },
+    { category: "RPO/RTO", front: "Rank HADR options by RPO (best to worst)", back: "1) Sync AG / Built-in HA / Zone-Redundant = 0 | 2) Async AG / Geo-Rep / Failover Groups ≤ 5s | 3) PITR = ~10 min | 4) Log Shipping = mins-hrs | 5) Geo-Restore = up to 1 hr" },
+    { category: "Technologies", front: "How many readable secondaries can Active Geo-Replication have?", back: "Up to 4 readable geo-secondaries in any Azure region. Each secondary can also have its own secondaries (chaining). Compare to Failover Groups which support only 1 secondary region." },
+    { category: "Technologies", front: "Can Auto-Failover Groups and Active Geo-Replication be used together?", back: "Not directly on the same database. A database in a Failover Group already has geo-replication configured (Failover Groups are built on top of geo-replication technology)." },
+    { category: "Concepts", front: "What is the GracePeriodWithDataLossHours setting?", back: "In Auto-Failover Groups, this configures how long Azure waits before triggering automatic failover after detecting an outage. Default is 1 hour. Prevents failover for transient issues." },
+    { category: "Platform Mapping", front: "What HA architecture does Business Critical tier use internally?", back: "Always On Availability Group technology with 3 synchronous secondary replicas. One replica exposed as readable (read scale-out). Same tech as IaaS AG but fully Azure-managed." },
+    { category: "Platform Mapping", front: "What HA architecture does Hyperscale tier use?", back: "Unique architecture: stateless compute + distributed page servers + log service. Supports up to 30 named replicas for read scale-out. Up to 128TB. Fast failover because compute is stateless." },
+    { category: "Concepts", front: "What is the difference between local HA and geo-DR?", back: "Local HA: Protects against node/zone failure WITHIN a region (zone-redundant, built-in HA). Geo-DR: Protects against REGION failure (Failover Groups, Geo-Replication, Geo-Restore). Both are needed for complete BCDR." },
+    { category: "Technologies", front: "What quorum witness types are available for WSFC?", back: "1) Node Majority (odd nodes, no witness needed) | 2) Disk Witness (shared disk) | 3) File Share Witness (SMB share) | 4) Cloud Witness (Azure Blob) — recommended for Azure VMs." },
+    { category: "Concepts", front: "What happens to connection strings during a Failover Group failover?", back: "Nothing! Failover Groups provide listener endpoints (e.g., <group>.database.windows.net) that automatically redirect to the current primary. Applications don't need connection string changes." },
+    { category: "Technologies", front: "FCI vs AG: When would you choose FCI over AG?", back: "Choose FCI when: you need instance-level failover (all DBs together), you have shared storage, you want simpler licensing (Standard Edition). Choose AG when: you need readable secondaries, database-level control, or cross-region DR." },
+    { category: "RPO/RTO", front: "What is the maximum retention period for PITR in Azure SQL?", back: "1-35 days (configurable, default 7 days). For longer retention, use Long-Term Retention (LTR) which supports up to 10 years. LTR stores weekly/monthly/yearly full backup copies." },
+    { category: "Concepts", front: "What is split-brain and how does WSFC prevent it?", back: "Split-brain: both sides of a partitioned cluster think they're primary, causing data corruption. WSFC prevents it via quorum — a partition must have majority votes to remain online. The minority side shuts down." },
+    { category: "Platform Mapping", front: "Does Azure SQL Database support FCI (Failover Cluster Instance)?", back: "NO. FCI requires OS-level access and shared storage management. Only available on SQL Server on VMs (IaaS). PaaS services use built-in platform-managed HA instead." }
+];
+
+// ==================== APP STATE ====================
+let currentTab = 'matrix';
+let currentFilter = 'all';
+let quizState = { currentIndex: 0, score: 0, answered: [], showResults: false };
+let flashcardState = { currentIndex: 0, flipped: false, known: [], learning: [], category: 'all' };
+
+// Load progress from localStorage
+function loadProgress() {
+    const saved = localStorage.getItem('dp300-hadr-progress');
+    return saved ? JSON.parse(saved) : {
+        quizScores: [],
+        flashcardsKnown: [],
+        flashcardsLearning: [],
+        totalQuizAttempts: 0,
+        lastStudyDate: null
+    };
+}
+
+function saveProgress(progress) {
+    localStorage.setItem('dp300-hadr-progress', JSON.stringify(progress));
+}
+
+// ==================== NAVIGATION ====================
+document.querySelectorAll('.nav-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+        const tab = btn.dataset.tab;
+        document.querySelectorAll('.nav-btn').forEach(b => { b.classList.remove('active'); b.setAttribute('aria-selected', 'false'); });
+        btn.classList.add('active');
+        btn.setAttribute('aria-selected', 'true');
+        document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+        document.getElementById(`section-${tab}`).classList.add('active');
+        currentTab = tab;
+        if (tab === 'progress') renderDashboard();
+    });
+});
+
+// ==================== COMPARISON MATRIX ====================
+function renderMatrix() {
+    const tbody = document.getElementById('matrix-body');
+    const filtered = currentFilter === 'all' ? matrixData :
+        matrixData.filter(row => row.platforms.includes(currentFilter));
+
+    tbody.innerHTML = filtered.map(row => `
+        <tr>
+            <td><strong>${row.feature}</strong></td>
+            <td>${row.iaas ? '<span class="check">✓</span>' : '<span class="cross">✗</span>'}</td>
+            <td>${row.paasDb ? '<span class="check">✓</span>' : '<span class="cross">✗</span>'}</td>
+            <td>${row.paasMi ? '<span class="check">✓</span>' : '<span class="cross">✗</span>'}</td>
+            <td>${row.failover}</td>
+            <td>${row.rpo}</td>
+            <td>${row.rto}</td>
+            <td>${row.readScale}</td>
+        </tr>
+    `).join('');
+}
+
+document.querySelectorAll('.filter-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentFilter = btn.dataset.filter;
+        renderMatrix();
+    });
+});
+
+// ==================== TECHNOLOGY EXPLORER ====================
+function renderTechExplorer() {
+    const grid = document.getElementById('tech-grid');
+    grid.innerHTML = techData.map((tech, i) => {
+        const platformClass = tech.platform === 'iaas' ? 'badge-iaas' :
+            tech.platform === 'paas-db' ? 'badge-paas-db' :
+            tech.platform === 'both' ? 'badge-both' : 'badge-paas-mi';
+
+        return `
+        <div class="tech-card" data-index="${i}" onclick="toggleTechCard(this)">
+            <div class="tech-card-header">
+                <div>
+                    <h3>${tech.name}</h3>
+                    <span class="badge ${platformClass}">${tech.platformLabel}</span>
+                </div>
+            </div>
+            <p class="tech-card-desc">${tech.desc}</p>
+            <div class="tech-card-stats">
+                <div class="stat-item">
+                    <div class="stat-label">RPO</div>
+                    <div class="stat-value">${tech.stats.rpo}</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-label">RTO</div>
+                    <div class="stat-value">${tech.stats.rto}</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-label">Max Replicas</div>
+                    <div class="stat-value">${tech.stats.maxReplicas}</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-label">Failover</div>
+                    <div class="stat-value">${tech.stats.failover}</div>
+                </div>
+            </div>
+            <div class="tech-card-toggle">Click to expand details ▼</div>
+            <div class="tech-card-detail">${tech.detail}</div>
+        </div>`;
+    }).join('');
+}
+
+function toggleTechCard(card) {
+    card.classList.toggle('expanded');
+    const toggle = card.querySelector('.tech-card-toggle');
+    toggle.textContent = card.classList.contains('expanded') ? 'Click to collapse ▲' : 'Click to expand details ▼';
+}
+
+// ==================== QUIZ ENGINE ====================
+function renderQuiz() {
+    const container = document.getElementById('quiz-container');
+
+    if (quizState.showResults) {
+        const pct = Math.round((quizState.score / quizData.length) * 100);
+        const progress = loadProgress();
+        progress.quizScores.push(pct);
+        progress.totalQuizAttempts++;
+        progress.lastStudyDate = new Date().toISOString();
+        saveProgress(progress);
+
+        container.innerHTML = `
+            <div class="quiz-card quiz-results">
+                <h3>Quiz Complete!</h3>
+                <div class="quiz-score">${pct}%</div>
+                <div class="quiz-score-detail">${quizState.score} of ${quizData.length} correct</div>
+                <p style="color: var(--text-secondary); margin-bottom: 2rem;">
+                    ${pct >= 80 ? '🎉 Excellent! You\'re well-prepared for the HADR section!' :
+                      pct >= 60 ? '👍 Good progress! Review the explanations for missed questions.' :
+                      '📚 Keep studying! Focus on the areas where you missed questions.'}
+                </p>
+                <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;">
+                    <button class="btn btn-primary" onclick="resetQuiz()">Try Again</button>
+                    <button class="btn btn-secondary" onclick="reviewMistakes()">Review Mistakes</button>
+                </div>
+            </div>`;
+        return;
+    }
+
+    const q = quizData[quizState.currentIndex];
+    const answered = quizState.answered[quizState.currentIndex];
+    const progress = ((quizState.currentIndex) / quizData.length) * 100;
+
+    container.innerHTML = `
+        <div class="quiz-progress">
+            <div class="quiz-progress-bar"><div class="quiz-progress-fill" style="width:${progress}%"></div></div>
+            <span class="quiz-progress-text">${quizState.currentIndex + 1} / ${quizData.length}</span>
+        </div>
+        <div class="quiz-card">
+            <div class="quiz-category">${q.category}</div>
+            <div class="quiz-question">${q.question}</div>
+            <div class="quiz-options">
+                ${q.options.map((opt, i) => {
+                    let cls = '';
+                    if (answered !== undefined) {
+                        cls = 'disabled';
+                        if (i === q.correct) cls += ' correct';
+                        else if (i === answered && i !== q.correct) cls += ' incorrect';
+                    }
+                    return `<div class="quiz-option ${cls}" data-index="${i}" onclick="selectAnswer(${i})">
+                        <span class="quiz-option-letter">${String.fromCharCode(65 + i)}</span>
+                        <span>${opt}</span>
+                    </div>`;
+                }).join('')}
+            </div>
+            <div class="quiz-explanation ${answered !== undefined ? 'visible' : ''}" id="quiz-explanation">
+                <strong>Explanation:</strong> ${q.explanation}
+            </div>
+            <div class="quiz-actions">
+                <button class="btn btn-secondary" onclick="prevQuestion()" ${quizState.currentIndex === 0 ? 'disabled' : ''}>← Previous</button>
+                <button class="btn btn-primary" onclick="nextQuestion()" ${answered === undefined ? 'disabled' : ''}>${quizState.currentIndex === quizData.length - 1 ? 'See Results' : 'Next →'}</button>
+            </div>
+        </div>`;
+}
+
+function selectAnswer(index) {
+    if (quizState.answered[quizState.currentIndex] !== undefined) return;
+    quizState.answered[quizState.currentIndex] = index;
+    if (index === quizData[quizState.currentIndex].correct) quizState.score++;
+    renderQuiz();
+}
+
+function nextQuestion() {
+    if (quizState.currentIndex === quizData.length - 1) {
+        quizState.showResults = true;
+    } else {
+        quizState.currentIndex++;
+    }
+    renderQuiz();
+}
+
+function prevQuestion() {
+    if (quizState.currentIndex > 0) {
+        quizState.currentIndex--;
+        renderQuiz();
+    }
+}
+
+function resetQuiz() {
+    quizState = { currentIndex: 0, score: 0, answered: [], showResults: false };
+    renderQuiz();
+}
+
+function reviewMistakes() {
+    const firstMistake = quizState.answered.findIndex((a, i) => a !== quizData[i].correct);
+    if (firstMistake >= 0) {
+        quizState.showResults = false;
+        quizState.currentIndex = firstMistake;
+        renderQuiz();
+    }
+}
+
+// ==================== FLASHCARDS ====================
+function getFilteredFlashcards() {
+    if (flashcardState.category === 'all') return flashcardData;
+    return flashcardData.filter(f => f.category === flashcardState.category);
+}
+
+function renderFlashcards() {
+    const container = document.getElementById('flashcard-container');
+    const cards = getFilteredFlashcards();
+    const progress = loadProgress();
+
+    if (cards.length === 0) {
+        container.innerHTML = '<p class="text-center" style="color:var(--text-secondary)">No flashcards in this category.</p>';
+        return;
+    }
+
+    const idx = flashcardState.currentIndex % cards.length;
+    const card = cards[idx];
+    const categories = [...new Set(flashcardData.map(f => f.category))];
+    const knownCount = progress.flashcardsKnown.length;
+    const totalCount = flashcardData.length;
+
+    container.innerHTML = `
+        <div class="flashcard-progress">
+            <span class="flashcard-counter">Card ${idx + 1} of ${cards.length} | Mastered: ${knownCount}/${totalCount}</span>
+            <div class="flashcard-category-filter">
+                <button class="filter-btn ${flashcardState.category === 'all' ? 'active' : ''}" onclick="filterFlashcards('all')">All</button>
+                ${categories.map(c => `<button class="filter-btn ${flashcardState.category === c ? 'active' : ''}" onclick="filterFlashcards('${c}')">${c}</button>`).join('')}
+            </div>
+        </div>
+        <div class="flashcard-wrapper">
+            <div class="flashcard ${flashcardState.flipped ? 'flipped' : ''}" onclick="flipFlashcard()">
+                <div class="flashcard-face flashcard-front">
+                    <div class="flashcard-label">${card.category} — Question</div>
+                    <div class="flashcard-text">${card.front}</div>
+                    <div class="flashcard-hint">Click to flip</div>
+                </div>
+                <div class="flashcard-face flashcard-back">
+                    <div class="flashcard-label">${card.category} — Answer</div>
+                    <div class="flashcard-text">${card.back}</div>
+                    <div class="flashcard-hint">Click to flip back</div>
+                </div>
+            </div>
+        </div>
+        <div class="flashcard-actions">
+            <button class="flashcard-btn flashcard-btn-learn" onclick="markFlashcard('learning')">🔄 Still Learning</button>
+            <button class="flashcard-btn flashcard-btn-skip" onclick="skipFlashcard()">⏭ Skip</button>
+            <button class="flashcard-btn flashcard-btn-know" onclick="markFlashcard('known')">✓ Know It</button>
+        </div>`;
+}
+
+function flipFlashcard() {
+    flashcardState.flipped = !flashcardState.flipped;
+    const card = document.querySelector('.flashcard');
+    if (card) card.classList.toggle('flipped');
+}
+
+function markFlashcard(status) {
+    const cards = getFilteredFlashcards();
+    const idx = flashcardState.currentIndex % cards.length;
+    const cardKey = cards[idx].front;
+    const progress = loadProgress();
+
+    if (status === 'known') {
+        if (!progress.flashcardsKnown.includes(cardKey)) progress.flashcardsKnown.push(cardKey);
+        progress.flashcardsLearning = progress.flashcardsLearning.filter(k => k !== cardKey);
+    } else {
+        if (!progress.flashcardsLearning.includes(cardKey)) progress.flashcardsLearning.push(cardKey);
+        progress.flashcardsKnown = progress.flashcardsKnown.filter(k => k !== cardKey);
+    }
+    progress.lastStudyDate = new Date().toISOString();
+    saveProgress(progress);
+    nextFlashcard();
+}
+
+function skipFlashcard() {
+    nextFlashcard();
+}
+
+function nextFlashcard() {
+    const cards = getFilteredFlashcards();
+    flashcardState.currentIndex = (flashcardState.currentIndex + 1) % cards.length;
+    flashcardState.flipped = false;
+    renderFlashcards();
+}
+
+function filterFlashcards(category) {
+    flashcardState.category = category;
+    flashcardState.currentIndex = 0;
+    flashcardState.flipped = false;
+    renderFlashcards();
+}
+
+// ==================== PROGRESS DASHBOARD ====================
+function renderDashboard() {
+    const grid = document.getElementById('dashboard-grid');
+    const progress = loadProgress();
+
+    const avgScore = progress.quizScores.length > 0 ?
+        Math.round(progress.quizScores.reduce((a, b) => a + b, 0) / progress.quizScores.length) : 0;
+    const bestScore = progress.quizScores.length > 0 ? Math.max(...progress.quizScores) : 0;
+    const flashcardMastery = Math.round((progress.flashcardsKnown.length / flashcardData.length) * 100);
+
+    const categoryStats = {};
+    flashcardData.forEach(card => {
+        if (!categoryStats[card.category]) categoryStats[card.category] = { total: 0, known: 0 };
+        categoryStats[card.category].total++;
+        if (progress.flashcardsKnown.includes(card.front)) categoryStats[card.category].known++;
+    });
+
+    const colors = ['blue', 'green', 'purple', 'orange'];
+
+    grid.innerHTML = `
+        <div class="dashboard-card">
+            <h4>Quiz Performance</h4>
+            <div class="dashboard-stat">${avgScore}%</div>
+            <div class="dashboard-stat-sub">Average Score (${progress.totalQuizAttempts} attempts)</div>
+            <div class="progress-bar-container mt-1">
+                <div class="progress-bar-label"><span>Best Score</span><span>${bestScore}%</span></div>
+                <div class="progress-bar"><div class="progress-bar-fill blue" style="width:${bestScore}%"></div></div>
+                <div class="progress-bar-label"><span>Latest Score</span><span>${progress.quizScores.length > 0 ? progress.quizScores[progress.quizScores.length - 1] : 0}%</span></div>
+                <div class="progress-bar"><div class="progress-bar-fill purple" style="width:${progress.quizScores.length > 0 ? progress.quizScores[progress.quizScores.length - 1] : 0}%"></div></div>
+            </div>
+        </div>
+        <div class="dashboard-card">
+            <h4>Flashcard Mastery</h4>
+            <div class="dashboard-stat">${flashcardMastery}%</div>
+            <div class="dashboard-stat-sub">${progress.flashcardsKnown.length} of ${flashcardData.length} cards mastered</div>
+            <div class="progress-bar-container mt-1">
+                ${Object.entries(categoryStats).map(([cat, stats], i) => `
+                    <div class="progress-bar-label"><span>${cat}</span><span>${stats.known}/${stats.total}</span></div>
+                    <div class="progress-bar"><div class="progress-bar-fill ${colors[i % colors.length]}" style="width:${(stats.known/stats.total)*100}%"></div></div>
+                `).join('')}
+            </div>
+        </div>
+        <div class="dashboard-card">
+            <h4>Study Summary</h4>
+            <div class="dashboard-stat">${progress.flashcardsKnown.length + progress.totalQuizAttempts * quizData.length}</div>
+            <div class="dashboard-stat-sub">Total interactions</div>
+            <div class="progress-bar-container mt-1">
+                <div class="progress-bar-label"><span>Questions Attempted</span><span>${progress.totalQuizAttempts * quizData.length}</span></div>
+                <div class="progress-bar"><div class="progress-bar-fill green" style="width:${Math.min(100, (progress.totalQuizAttempts * quizData.length / 100) * 100)}%"></div></div>
+                <div class="progress-bar-label"><span>Last Study Session</span><span>${progress.lastStudyDate ? new Date(progress.lastStudyDate).toLocaleDateString() : 'Never'}</span></div>
+            </div>
+            <button class="btn-reset" onclick="resetProgress()">Reset All Progress</button>
+        </div>`;
+}
+
+function resetProgress() {
+    if (confirm('Are you sure you want to reset all progress? This cannot be undone.')) {
+        localStorage.removeItem('dp300-hadr-progress');
+        renderDashboard();
+    }
+}
+
+// ==================== INIT ====================
+renderMatrix();
+renderTechExplorer();
+renderQuiz();
+renderFlashcards();
+</script>
+</body>
+</html>
