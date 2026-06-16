@@ -844,6 +844,45 @@
         .text-center { text-align: center; }
         .mt-1 { margin-top: 1rem; }
         .mt-2 { margin-top: 2rem; }
+
+        /* Links */
+        a.doc-link {
+            color: var(--accent-cyan);
+            text-decoration: none;
+            font-size: 0.8rem;
+            font-weight: 500;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        a.doc-link:hover {
+            color: var(--accent-blue);
+            text-decoration: underline;
+        }
+
+        a.doc-link::after {
+            content: '↗';
+            font-size: 0.7rem;
+        }
+
+        .matrix-doc-link {
+            display: block;
+            margin-top: 0.3rem;
+        }
+
+        .quiz-doc-link {
+            margin-top: 0.75rem;
+            padding-top: 0.75rem;
+            border-top: 1px solid var(--border-color);
+            display: block;
+        }
+
+        .tech-doc-link {
+            margin-top: 1rem;
+            display: block;
+        }
     </style>
 </head>
 <body>
@@ -1013,7 +1052,8 @@ const matrixData = [
         rpo: "0 (sync) or seconds (async)",
         rto: "Seconds to minutes",
         readScale: "Yes — up to 8 secondaries",
-        platforms: ["iaas"]
+        platforms: ["iaas"],
+        docUrl: "https://learn.microsoft.com/en-us/azure/azure-sql/virtual-machines/windows/availability-group-overview"
     },
     {
         feature: "Failover Cluster Instance (FCI)",
@@ -1022,7 +1062,8 @@ const matrixData = [
         rpo: "0 (shared storage)",
         rto: "Seconds to minutes",
         readScale: "No",
-        platforms: ["iaas"]
+        platforms: ["iaas"],
+        docUrl: "https://learn.microsoft.com/en-us/sql/sql-server/failover-clusters/windows/always-on-failover-cluster-instances-sql-server"
     },
     {
         feature: "Distributed Availability Groups (DAG)",
@@ -1031,7 +1072,8 @@ const matrixData = [
         rpo: "Seconds (async recommended; sync supported)",
         rto: "Minutes",
         readScale: "Yes (if readable secondaries configured)",
-        platforms: ["iaas"]
+        platforms: ["iaas"],
+        docUrl: "https://learn.microsoft.com/en-us/sql/database-engine/availability-groups/windows/distributed-availability-groups"
     },
     {
         feature: "Windows Server Failover Cluster (WSFC)",
@@ -1040,7 +1082,8 @@ const matrixData = [
         rpo: "N/A (infra, not data replication)",
         rto: "Seconds",
         readScale: "N/A",
-        platforms: ["iaas"]
+        platforms: ["iaas"],
+        docUrl: "https://learn.microsoft.com/en-us/sql/sql-server/failover-clusters/windows/windows-server-failover-clustering-wsfc-with-sql-server"
     },
     {
         feature: "Auto-Failover Groups",
@@ -1049,7 +1092,8 @@ const matrixData = [
         rpo: "≤ 5 seconds (async geo-replication)",
         rto: "Typically < 60 seconds (once triggered)",
         readScale: "Yes — readable secondary region",
-        platforms: ["paas-db", "paas-mi"]
+        platforms: ["paas-db", "paas-mi"],
+        docUrl: "https://learn.microsoft.com/en-us/azure/azure-sql/database/failover-group-sql-db"
     },
     {
         feature: "Active Geo-Replication",
@@ -1058,7 +1102,8 @@ const matrixData = [
         rpo: "≤ 5 seconds",
         rto: "< 30 seconds",
         readScale: "Yes — up to 4 readable secondaries",
-        platforms: ["paas-db"]
+        platforms: ["paas-db"],
+        docUrl: "https://learn.microsoft.com/en-us/azure/azure-sql/database/active-geo-replication-overview"
     },
     {
         feature: "Zone-Redundant Configuration",
@@ -1067,7 +1112,8 @@ const matrixData = [
         rpo: "0 (synchronous within region)",
         rto: "Seconds (transparent to app)",
         readScale: "Tier-dependent",
-        platforms: ["paas-db", "paas-mi"]
+        platforms: ["paas-db", "paas-mi"],
+        docUrl: "https://learn.microsoft.com/en-us/azure/azure-sql/database/high-availability-sla-local-zone-redundancy"
     },
     {
         feature: "Built-in HA (Platform Managed)",
@@ -1076,7 +1122,8 @@ const matrixData = [
         rpo: "0",
         rto: "Seconds (Business Critical) / Minutes (GP)",
         readScale: "Business Critical & Hyperscale only",
-        platforms: ["paas-db", "paas-mi"]
+        platforms: ["paas-db", "paas-mi"],
+        docUrl: "https://learn.microsoft.com/en-us/azure/azure-sql/database/high-availability-sla-local-zone-redundancy"
     },
     {
         feature: "Log Shipping",
@@ -1085,7 +1132,8 @@ const matrixData = [
         rpo: "Minutes to hours (depends on schedule)",
         rto: "Minutes to hours",
         readScale: "Yes (standby mode)",
-        platforms: ["iaas"]
+        platforms: ["iaas"],
+        docUrl: "https://learn.microsoft.com/en-us/sql/database-engine/log-shipping/about-log-shipping-sql-server"
     },
     {
         feature: "Database Mirroring (Deprecated)",
@@ -1094,7 +1142,8 @@ const matrixData = [
         rpo: "0 (sync) or seconds (async)",
         rto: "Seconds",
         readScale: "Yes (database snapshots on mirror)",
-        platforms: ["iaas"]
+        platforms: ["iaas"],
+        docUrl: "https://learn.microsoft.com/en-us/sql/database-engine/database-mirroring/database-mirroring-sql-server"
     },
     {
         feature: "Point-in-Time Restore (PITR)",
@@ -1103,7 +1152,8 @@ const matrixData = [
         rpo: "~10 minutes (log backup frequency)",
         rto: "Minutes to hours (depends on size)",
         readScale: "N/A",
-        platforms: ["paas-db", "paas-mi"]
+        platforms: ["paas-db", "paas-mi"],
+        docUrl: "https://learn.microsoft.com/en-us/azure/azure-sql/database/automated-backups-overview"
     },
     {
         feature: "Geo-Restore (from geo-redundant backup)",
@@ -1112,7 +1162,8 @@ const matrixData = [
         rpo: "Up to 1 hour",
         rto: "Hours (up to 12h for large DBs)",
         readScale: "N/A",
-        platforms: ["paas-db", "paas-mi"]
+        platforms: ["paas-db", "paas-mi"],
+        docUrl: "https://learn.microsoft.com/en-us/azure/azure-sql/database/recovery-using-backups"
     }
 ];
 
@@ -1123,6 +1174,7 @@ const techData = [
         platformLabel: "SQL Server on VM",
         desc: "Enterprise-grade HA/DR solution that replicates a group of databases to secondary replicas using synchronous or asynchronous commit.",
         stats: { rpo: "0 (sync) / Seconds (async)", rto: "Seconds–Minutes", maxReplicas: "Up to 9 (5 sync)", failover: "Automatic or Manual" },
+        docUrl: "https://learn.microsoft.com/en-us/azure/azure-sql/virtual-machines/windows/availability-group-overview",
         detail: `<strong>How it works:</strong> Creates a group of databases that fail over together. Uses WSFC underneath. Primary replica handles writes; secondaries receive transaction log records.<br><br>
         <strong>Key points:</strong><br>
         • Requires Windows Server Failover Clustering (WSFC) or Linux Pacemaker<br>
@@ -1139,6 +1191,7 @@ const techData = [
         platformLabel: "SQL Server on VM",
         desc: "Instance-level HA using shared storage. The entire SQL Server instance fails over to another node in the cluster.",
         stats: { rpo: "0 (shared storage)", rto: "Seconds–Minutes", maxReplicas: "N/A (shared instance)", failover: "Automatic" },
+        docUrl: "https://learn.microsoft.com/en-us/sql/sql-server/failover-clusters/windows/always-on-failover-cluster-instances-sql-server",
         detail: `<strong>How it works:</strong> Multiple nodes share the same database storage. Only one node is active at a time; if it fails, another node takes ownership of the shared storage and starts the SQL instance.<br><br>
         <strong>Key points:</strong><br>
         • Requires WSFC + shared storage (Azure Shared Disks, Storage Spaces Direct, or premium file shares)<br>
@@ -1155,6 +1208,7 @@ const techData = [
         platformLabel: "SQL Server on VM",
         desc: "Connects two separate Availability Groups (each on their own WSFC) for cross-cluster, cross-region disaster recovery.",
         stats: { rpo: "Seconds (typically async)", rto: "Minutes (manual failover)", maxReplicas: "2 AGs linked", failover: "Manual only" },
+        docUrl: "https://learn.microsoft.com/en-us/sql/database-engine/availability-groups/windows/distributed-availability-groups",
         detail: `<strong>How it works:</strong> A DAG spans two independent AGs (each has its own WSFC). The forwarder replica in AG1 sends log records to the primary of AG2. Supports both synchronous and asynchronous data movement (async recommended for DR).<br><br>
         <strong>Key points:</strong><br>
         • Each AG is independent — separate WSFCs, potentially different domains or OS versions<br>
@@ -1171,6 +1225,7 @@ const techData = [
         platformLabel: "SQL Server on VM",
         desc: "The underlying Windows infrastructure that provides clustering services for AGs and FCIs. Not a SQL feature itself.",
         stats: { rpo: "N/A (infrastructure)", rto: "Seconds", maxReplicas: "N/A", failover: "Automatic (cluster layer)" },
+        docUrl: "https://learn.microsoft.com/en-us/sql/sql-server/failover-clusters/windows/windows-server-failover-clustering-wsfc-with-sql-server",
         detail: `<strong>How it works:</strong> WSFC provides heartbeat monitoring, quorum voting, IP resource management, and automatic failover coordination for clustered services.<br><br>
         <strong>Key points:</strong><br>
         • Required foundation for Always On AGs and FCIs (on Windows)<br>
@@ -1187,6 +1242,7 @@ const techData = [
         platformLabel: "SQL DB + Managed Instance",
         desc: "Azure-managed feature that groups databases for geo-replication with automatic failover and listener endpoints across regions.",
         stats: { rpo: "≤ 5 seconds", rto: "Typically < 60 seconds", maxReplicas: "1 secondary region", failover: "Automatic + Manual" },
+        docUrl: "https://learn.microsoft.com/en-us/azure/azure-sql/database/failover-group-sql-db",
         detail: `<strong>How it works:</strong> Creates a logical group of databases replicated asynchronously to a paired secondary region. Provides read-write and read-only listener endpoints that automatically redirect after failover.<br><br>
         <strong>Key points:</strong><br>
         • Available for both Azure SQL Database and Managed Instance<br>
@@ -1203,6 +1259,7 @@ const techData = [
         platformLabel: "SQL Database only",
         desc: "Per-database asynchronous replication to up to 4 readable secondaries in any Azure region. Manual failover only.",
         stats: { rpo: "≤ 5 seconds", rto: "< 30 seconds", maxReplicas: "Up to 4 geo-secondaries", failover: "Manual only" },
+        docUrl: "https://learn.microsoft.com/en-us/azure/azure-sql/database/active-geo-replication-overview",
         detail: `<strong>How it works:</strong> Continuously replicates committed transactions from a primary database to up to 4 secondary databases in different Azure regions using asynchronous replication.<br><br>
         <strong>Key points:</strong><br>
         • Azure SQL Database ONLY (not Managed Instance)<br>
@@ -1219,6 +1276,7 @@ const techData = [
         platformLabel: "SQL DB + Managed Instance",
         desc: "Distributes replicas across Azure Availability Zones within the same region for protection against datacenter-level failures.",
         stats: { rpo: "0 (synchronous)", rto: "Seconds (transparent)", maxReplicas: "Tier-dependent", failover: "Automatic (transparent)" },
+        docUrl: "https://learn.microsoft.com/en-us/azure/azure-sql/database/high-availability-sla-local-zone-redundancy",
         detail: `<strong>How it works:</strong> Spreads database replicas across physically separate datacenters (Availability Zones) within one Azure region. If one zone fails, other zones continue serving the workload.<br><br>
         <strong>Key points:</strong><br>
         • Available for General Purpose, Business Critical, and Hyperscale tiers<br>
@@ -1234,6 +1292,7 @@ const techData = [
         platformLabel: "SQL Server on VM",
         desc: "Legacy DR technique that ships transaction log backups from primary to secondary servers on a scheduled basis.",
         stats: { rpo: "Minutes–Hours (schedule dependent)", rto: "Minutes–Hours", maxReplicas: "Multiple secondaries", failover: "Manual" },
+        docUrl: "https://learn.microsoft.com/en-us/sql/database-engine/log-shipping/about-log-shipping-sql-server",
         detail: `<strong>How it works:</strong> Automated process: (1) Back up transaction log on primary, (2) Copy backup file to secondary server, (3) Restore backup on secondary. Runs on a schedule (e.g., every 15 minutes).<br><br>
         <strong>Key points:</strong><br>
         • Simple to set up, minimal requirements<br>
@@ -1250,6 +1309,7 @@ const techData = [
         platformLabel: "SQL Server on VM (Legacy)",
         desc: "Deprecated per-database HA feature. Maintains a standby copy via synchronous or asynchronous log record shipping.",
         stats: { rpo: "0 (sync) / Seconds (async)", rto: "Seconds", maxReplicas: "1 mirror + 1 witness", failover: "Automatic (high-safety) / Manual" },
+        docUrl: "https://learn.microsoft.com/en-us/sql/database-engine/database-mirroring/database-mirroring-sql-server",
         detail: `<strong>How it works:</strong> Ships log records from principal to mirror database in real-time. High-safety mode = synchronous with automatic failover (requires witness). High-performance = asynchronous.<br><br>
         <strong>Key points:</strong><br>
         • DEPRECATED — removed in future SQL Server versions<br>
@@ -1266,6 +1326,7 @@ const techData = [
         platformLabel: "SQL DB + Managed Instance",
         desc: "Azure-managed backup feature allowing restore to any point within the retention period (1-35 days default).",
         stats: { rpo: "~10 minutes (log backup frequency)", rto: "Minutes–Hours", maxReplicas: "N/A (restore)", failover: "N/A (recovery operation)" },
+        docUrl: "https://learn.microsoft.com/en-us/azure/azure-sql/database/automated-backups-overview",
         detail: `<strong>How it works:</strong> Azure automatically takes full backups (weekly), differential backups (every 12-24h), and transaction log backups (approximately every 10 minutes). You can restore to any second within the retention window.<br><br>
         <strong>Key points:</strong><br>
         • Fully automated — no manual backup management needed<br>
@@ -1284,7 +1345,8 @@ const quizData = [
         question: "A company is migrating their SQL Server databases to Azure SQL Managed Instance. They need cross-region disaster recovery with automatic failover. Which feature should they configure?",
         options: ["Always On Availability Groups", "Active Geo-Replication", "Auto-Failover Groups", "Distributed Availability Groups"],
         correct: 2,
-        explanation: "Auto-Failover Groups are available for both Azure SQL Database and Managed Instance, providing automatic geo-failover with listener endpoints. Active Geo-Replication is only for Azure SQL Database (not MI). AGs and DAGs are for SQL Server on VMs (IaaS) only."
+        explanation: "Auto-Failover Groups are available for both Azure SQL Database and Managed Instance, providing automatic geo-failover with listener endpoints. Active Geo-Replication is only for Azure SQL Database (not MI). AGs and DAGs are for SQL Server on VMs (IaaS) only.",
+        docUrl: "https://learn.microsoft.com/en-us/azure/azure-sql/database/failover-group-sql-db"
     },
     {
         category: "Technology Differences",
@@ -1296,7 +1358,8 @@ const quizData = [
             "There is no difference — they are the same feature"
         ],
         correct: 1,
-        explanation: "Auto-Failover Groups provide listener endpoints (read-write and read-only) that automatically redirect connections after failover, and support automatic failover. Active Geo-Replication requires manual failover and has no listener endpoints — the application must manage connection string changes."
+        explanation: "Auto-Failover Groups provide listener endpoints (read-write and read-only) that automatically redirect connections after failover, and support automatic failover. Active Geo-Replication requires manual failover and has no listener endpoints — the application must manage connection string changes.",
+        docUrl: "https://learn.microsoft.com/en-us/azure/azure-sql/database/active-geo-replication-overview"
     },
     {
         category: "RPO/RTO",
@@ -1308,14 +1371,16 @@ const quizData = [
             "General Purpose tier with geo-redundant backups"
         ],
         correct: 2,
-        explanation: "Business Critical tier uses synchronous replication (Always On AG technology underneath) providing RPO=0. Zone redundancy spreads replicas across availability zones for datacenter-level protection. Geo-replication is asynchronous (RPO ≤ 5s). Geo-redundant backups have RPO up to 1 hour."
+        explanation: "Business Critical tier uses synchronous replication (Always On AG technology underneath) providing RPO=0. Zone redundancy spreads replicas across availability zones for datacenter-level protection. Geo-replication is asynchronous (RPO ≤ 5s). Geo-redundant backups have RPO up to 1 hour.",
+        docUrl: "https://learn.microsoft.com/en-us/azure/azure-sql/database/high-availability-sla-local-zone-redundancy"
     },
     {
         category: "Architecture",
         question: "Which Azure SQL Database service tier uses a separated compute and storage architecture where failover involves attaching remote storage to a new compute node?",
         options: ["Business Critical", "General Purpose", "Hyperscale", "Premium"],
         correct: 1,
-        explanation: "General Purpose tier separates compute and storage. On failure, a new compute node is provisioned and attaches to the existing remote Azure Premium Storage. This results in longer failover times (minutes) compared to Business Critical (seconds) which keeps data on local SSDs with synchronous replicas."
+        explanation: "General Purpose tier separates compute and storage. On failure, a new compute node is provisioned and attaches to the existing remote Azure Premium Storage. This results in longer failover times (minutes) compared to Business Critical (seconds) which keeps data on local SSDs with synchronous replicas.",
+        docUrl: "https://learn.microsoft.com/en-us/azure/azure-sql/database/service-tiers-sql-database-vcore"
     },
     {
         category: "Infrastructure",
@@ -1327,7 +1392,8 @@ const quizData = [
             "WSFC manages the backup and restore process"
         ],
         correct: 1,
-        explanation: "WSFC provides the cluster infrastructure: heartbeat monitoring, quorum management (determining which nodes are alive), resource group management, and failover orchestration. It does NOT replicate data — that's done by the AG itself via log record shipping. WSFC is required for AGs on Windows (Linux uses Pacemaker)."
+        explanation: "WSFC provides the cluster infrastructure: heartbeat monitoring, quorum management (determining which nodes are alive), resource group management, and failover orchestration. It does NOT replicate data — that's done by the AG itself via log record shipping. WSFC is required for AGs on Windows (Linux uses Pacemaker).",
+        docUrl: "https://learn.microsoft.com/en-us/sql/sql-server/failover-clusters/windows/windows-server-failover-clustering-wsfc-with-sql-server"
     },
     {
         category: "Platform Mapping",
@@ -1339,7 +1405,8 @@ const quizData = [
             "Log Shipping and Database Mirroring"
         ],
         correct: 1,
-        explanation: "Always On Availability Groups and Failover Cluster Instances both require WSFC as their underlying cluster infrastructure (on Windows). PaaS features (Failover Groups, Geo-Replication, Zone Redundancy) are fully Azure-managed and don't require WSFC. Log Shipping and Database Mirroring work without WSFC."
+        explanation: "Always On Availability Groups and Failover Cluster Instances both require WSFC as their underlying cluster infrastructure (on Windows). PaaS features (Failover Groups, Geo-Replication, Zone Redundancy) are fully Azure-managed and don't require WSFC. Log Shipping and Database Mirroring work without WSFC.",
+        docUrl: "https://learn.microsoft.com/en-us/azure/azure-sql/virtual-machines/windows/hadr-windows-server-failover-cluster-overview"
     },
     {
         category: "Scenario",
@@ -1351,7 +1418,8 @@ const quizData = [
             "Geo-Restore from geo-redundant backups"
         ],
         correct: 1,
-        explanation: "Auto-Failover Groups group multiple databases to fail over together, provide automatic failover, and offer listener endpoints (read-write and read-only) so applications don't need connection string changes after failover. Active Geo-Replication is per-database with manual failover and no listeners."
+        explanation: "Auto-Failover Groups group multiple databases to fail over together, provide automatic failover, and offer listener endpoints (read-write and read-only) so applications don't need connection string changes after failover. Active Geo-Replication is per-database with manual failover and no listeners.",
+        docUrl: "https://learn.microsoft.com/en-us/azure/azure-sql/database/failover-group-sql-db"
     },
     {
         category: "Technology Differences",
@@ -1363,7 +1431,8 @@ const quizData = [
             "A DAG only supports asynchronous replication"
         ],
         correct: 1,
-        explanation: "A Distributed Availability Group links two separate AGs (each with its own WSFC) for cross-cluster, cross-region disaster recovery. Unlike a regular AG which operates within a single WSFC, a DAG spans independent clusters. DAGs support both synchronous and asynchronous data movement (async is recommended for DR scenarios), and only manual failover is supported."
+        explanation: "A Distributed Availability Group links two separate AGs (each with its own WSFC) for cross-cluster, cross-region disaster recovery. Unlike a regular AG which operates within a single WSFC, a DAG spans independent clusters. DAGs support both synchronous and asynchronous data movement (async is recommended for DR scenarios), and only manual failover is supported.",
+        docUrl: "https://learn.microsoft.com/en-us/sql/database-engine/availability-groups/windows/distributed-availability-groups"
     },
     {
         category: "RPO/RTO",
@@ -1375,7 +1444,8 @@ const quizData = [
             "3 → 4 → 2 → 1 (Built-in → PITR → Failover Groups → Geo-Restore)"
         ],
         correct: 0,
-        explanation: "Built-in HA (Business Critical) = RPO 0 (synchronous). Auto-Failover Groups = RPO ≤ 5 seconds (asynchronous geo). PITR = RPO ~10 minutes (log backup frequency). Geo-Restore = RPO up to 1 hour (geo-redundant backup lag). The ranking is 0 → ≤5s → ~10min → up to 1h."
+        explanation: "Built-in HA (Business Critical) = RPO 0 (synchronous). Auto-Failover Groups = RPO ≤ 5 seconds (asynchronous geo). PITR = RPO ~10 minutes (log backup frequency). Geo-Restore = RPO up to 1 hour (geo-redundant backup lag). The ranking is 0 → ≤5s → ~10min → up to 1h.",
+        docUrl: "https://learn.microsoft.com/en-us/azure/azure-sql/database/business-continuity-high-availability-disaster-recover-hadr-overview"
     },
     {
         category: "Scenario",
@@ -1387,7 +1457,8 @@ const quizData = [
             "Log Shipping"
         ],
         correct: 1,
-        explanation: "Distributed Availability Groups are designed for this exact scenario — linking two separate AGs in different clusters (different domains allowed). A single WSFC spanning different domains is complex/unsupported. Auto-Failover Groups are PaaS only. While log shipping works, DAG provides better RPO and is the recommended solution. DAGs support both sync and async data movement and are available from SQL Server 2016."
+        explanation: "Distributed Availability Groups are designed for this exact scenario — linking two separate AGs in different clusters (different domains allowed). A single WSFC spanning different domains is complex/unsupported. Auto-Failover Groups are PaaS only. While log shipping works, DAG provides better RPO and is the recommended solution. DAGs support both sync and async data movement and are available from SQL Server 2016.",
+        docUrl: "https://learn.microsoft.com/en-us/sql/database-engine/availability-groups/windows/distributed-availability-groups"
     },
     {
         category: "Architecture",
@@ -1399,7 +1470,8 @@ const quizData = [
             "It uses database mirroring technology under the hood"
         ],
         correct: 1,
-        explanation: "Hyperscale uses a unique architecture with stateless compute nodes and distributed page servers (storage layer). Since compute is stateless, a new compute node can quickly take over by connecting to the same page servers — no need to copy 128TB of data. This enables fast recovery regardless of database size."
+        explanation: "Hyperscale uses a unique architecture with stateless compute nodes and distributed page servers (storage layer). Since compute is stateless, a new compute node can quickly take over by connecting to the same page servers — no need to copy 128TB of data. This enables fast recovery regardless of database size.",
+        docUrl: "https://learn.microsoft.com/en-us/azure/azure-sql/database/service-tier-hyperscale"
     },
     {
         category: "Platform Mapping",
@@ -1411,7 +1483,8 @@ const quizData = [
             "It supports synchronous replication for zero data loss"
         ],
         correct: 1,
-        explanation: "Active Geo-Replication is Azure SQL Database ONLY (not Managed Instance). It supports up to 4 readable geo-secondaries. It does NOT have listener endpoints (that's Failover Groups). It uses asynchronous replication only (RPO ≤ 5 seconds, not zero)."
+        explanation: "Active Geo-Replication is Azure SQL Database ONLY (not Managed Instance). It supports up to 4 readable geo-secondaries. It does NOT have listener endpoints (that's Failover Groups). It uses asynchronous replication only (RPO ≤ 5 seconds, not zero).",
+        docUrl: "https://learn.microsoft.com/en-us/azure/azure-sql/database/active-geo-replication-overview"
     },
     {
         category: "Infrastructure",
@@ -1423,7 +1496,8 @@ const quizData = [
             "A feature of Azure Monitor that alerts on cluster failures"
         ],
         correct: 1,
-        explanation: "Cloud Witness uses an Azure Storage Blob as the quorum witness for WSFC. It provides an independent vote in the cluster quorum, preventing split-brain scenarios. It's the recommended witness type for Azure VM deployments because it doesn't require a separate witness VM or shared disk."
+        explanation: "Cloud Witness uses an Azure Storage Blob as the quorum witness for WSFC. It provides an independent vote in the cluster quorum, preventing split-brain scenarios. It's the recommended witness type for Azure VM deployments because it doesn't require a separate witness VM or shared disk.",
+        docUrl: "https://learn.microsoft.com/en-us/azure/azure-sql/virtual-machines/windows/hadr-cluster-quorum-configure-how-to"
     },
     {
         category: "Scenario",
@@ -1435,7 +1509,8 @@ const quizData = [
             "Set up Active Geo-Replication for each database"
         ],
         correct: 2,
-        explanation: "Auto-Failover Groups provide: (1) multi-database grouped failover, (2) RTO typically under 60 seconds once triggered, (3) automatic failover on region outage. Zone redundancy only protects within a region. Geo-restore has RTO of hours. Active Geo-Replication is per-database with manual failover."
+        explanation: "Auto-Failover Groups provide: (1) multi-database grouped failover, (2) RTO typically under 60 seconds once triggered, (3) automatic failover on region outage. Zone redundancy only protects within a region. Geo-restore has RTO of hours. Active Geo-Replication is per-database with manual failover.",
+        docUrl: "https://learn.microsoft.com/en-us/azure/azure-sql/database/failover-group-sql-db"
     },
     {
         category: "Technology Differences",
@@ -1447,7 +1522,8 @@ const quizData = [
             "FCI cannot be deployed on Azure VMs"
         ],
         correct: 1,
-        explanation: "FCI uses shared storage with only one active node at a time — there are no readable secondaries. AGs support up to 8 readable secondary replicas. FCI does provide automatic failover and can use Standard edition. Both can be deployed on Azure VMs."
+        explanation: "FCI uses shared storage with only one active node at a time — there are no readable secondaries. AGs support up to 8 readable secondary replicas. FCI does provide automatic failover and can use Standard edition. Both can be deployed on Azure VMs.",
+        docUrl: "https://learn.microsoft.com/en-us/sql/sql-server/failover-clusters/windows/always-on-failover-cluster-instances-sql-server"
     },
     {
         category: "RPO/RTO",
@@ -1459,7 +1535,8 @@ const quizData = [
             "Auto-Failover Groups (RPO ≤ 5s, RTO typically < 60s)"
         ],
         correct: 2,
-        explanation: "Active Geo-Replication offers RPO ≤ 5 seconds and RTO < 30 seconds (for promoting a secondary). While it requires manual failover, it meets both the RPO (5 min tolerance, achieves ≤5s) and RTO (<30s) requirements. Auto-Failover Groups typically complete in < 60 seconds but may not guarantee < 30s. Built-in HA protects against node failure but not region failure."
+        explanation: "Active Geo-Replication offers RPO ≤ 5 seconds and RTO < 30 seconds (for promoting a secondary). While it requires manual failover, it meets both the RPO (5 min tolerance, achieves ≤5s) and RTO (<30s) requirements. Auto-Failover Groups typically complete in < 60 seconds but may not guarantee < 30s. Built-in HA protects against node failure but not region failure.",
+        docUrl: "https://learn.microsoft.com/en-us/azure/azure-sql/database/active-geo-replication-overview"
     },
     {
         category: "Backup Strategy",
@@ -1471,7 +1548,8 @@ const quizData = [
             "No automated backups — you must configure them manually"
         ],
         correct: 1,
-        explanation: "Azure automatically takes: Full backups (weekly), Differential backups (every 12-24 hours), and Transaction Log backups (approximately every 10 minutes). This enables point-in-time restore to any second within the retention period. No manual backup management is needed for PaaS services."
+        explanation: "Azure automatically takes: Full backups (weekly), Differential backups (every 12-24 hours), and Transaction Log backups (approximately every 10 minutes). This enables point-in-time restore to any second within the retention period. No manual backup management is needed for PaaS services.",
+        docUrl: "https://learn.microsoft.com/en-us/azure/azure-sql/database/automated-backups-overview"
     },
     {
         category: "Scenario",
@@ -1483,7 +1561,8 @@ const quizData = [
             "Use Azure Database Migration Service"
         ],
         correct: 1,
-        explanation: "Distributed Availability Groups are ideal for this scenario because they: (1) connect independent clusters (different OS versions allowed), (2) don't require shared WSFC between sites, (3) replicate data continuously, and (4) allow a fast planned failover with minimal downtime. DAGs support cross-version and cross-OS migration."
+        explanation: "Distributed Availability Groups are ideal for this scenario because they: (1) connect independent clusters (different OS versions allowed), (2) don't require shared WSFC between sites, (3) replicate data continuously, and (4) allow a fast planned failover with minimal downtime. DAGs support cross-version and cross-OS migration.",
+        docUrl: "https://learn.microsoft.com/en-us/sql/database-engine/availability-groups/windows/distributed-availability-groups"
     },
     {
         category: "Architecture",
@@ -1495,7 +1574,8 @@ const quizData = [
             "2 replicas, both readable"
         ],
         correct: 1,
-        explanation: "Business Critical tier maintains 3 secondary replicas using synchronous replication (Always On AG technology). One of these replicas is exposed as a readable secondary via the read-only listener endpoint. This provides both high availability (RPO=0) and read scale-out capability."
+        explanation: "Business Critical tier maintains 3 secondary replicas using synchronous replication (Always On AG technology). One of these replicas is exposed as a readable secondary via the read-only listener endpoint. This provides both high availability (RPO=0) and read scale-out capability.",
+        docUrl: "https://learn.microsoft.com/en-us/azure/azure-sql/database/service-tiers-sql-database-vcore"
     },
     {
         category: "Platform Mapping",
@@ -1507,7 +1587,8 @@ const quizData = [
             "No — but you can use database mirroring instead on Managed Instance"
         ],
         correct: 1,
-        explanation: "Log shipping is a SQL Server feature that requires OS-level access for backup file copying and job scheduling. It's only available on SQL Server on VMs (IaaS) or on-premises. PaaS services (Azure SQL DB and MI) don't support log shipping — use Failover Groups or Geo-Replication instead."
+        explanation: "Log shipping is a SQL Server feature that requires OS-level access for backup file copying and job scheduling. It's only available on SQL Server on VMs (IaaS) or on-premises. PaaS services (Azure SQL DB and MI) don't support log shipping — use Failover Groups or Geo-Replication instead.",
+        docUrl: "https://learn.microsoft.com/en-us/sql/database-engine/log-shipping/about-log-shipping-sql-server"
     },
     {
         category: "Backup Strategy",
@@ -1519,7 +1600,8 @@ const quizData = [
             "PITR requires manual backup configuration; LTR is automatic"
         ],
         correct: 0,
-        explanation: "PITR enables restore to any point within the short-term retention window (1-35 days) using full + differential + log backups. LTR copies full backups to separate storage for long-term compliance retention (up to 10 years), configurable on weekly/monthly/yearly schedules. Both are available for SQL DB and MI."
+        explanation: "PITR enables restore to any point within the short-term retention window (1-35 days) using full + differential + log backups. LTR copies full backups to separate storage for long-term compliance retention (up to 10 years), configurable on weekly/monthly/yearly schedules. Both are available for SQL DB and MI.",
+        docUrl: "https://learn.microsoft.com/en-us/azure/azure-sql/database/automated-backups-overview"
     },
     {
         category: "Technology Differences",
@@ -1531,7 +1613,8 @@ const quizData = [
             "Azure automatically manages quorum — no configuration needed"
         ],
         correct: 1,
-        explanation: "Cloud Witness uses an Azure Blob Storage account as the quorum witness. It's recommended for Azure because it doesn't require a separate witness VM, works across regions, and provides an independent arbitration point. File share witness and disk witness are less suitable for cloud deployments."
+        explanation: "Cloud Witness uses an Azure Blob Storage account as the quorum witness. It's recommended for Azure because it doesn't require a separate witness VM, works across regions, and provides an independent arbitration point. File share witness and disk witness are less suitable for cloud deployments.",
+        docUrl: "https://learn.microsoft.com/en-us/azure/azure-sql/virtual-machines/windows/hadr-cluster-quorum-configure-how-to"
     }
 ];
 
@@ -1624,7 +1707,7 @@ function renderMatrix() {
 
     tbody.innerHTML = filtered.map(row => `
         <tr>
-            <td><strong>${row.feature}</strong></td>
+            <td><strong>${row.feature}</strong>${row.docUrl ? `<a href="${row.docUrl}" target="_blank" rel="noopener" class="doc-link matrix-doc-link">MS Learn</a>` : ''}</td>
             <td>${row.iaas ? '<span class="check">✓</span>' : '<span class="cross">✗</span>'}</td>
             <td>${row.paasDb ? '<span class="check">✓</span>' : '<span class="cross">✗</span>'}</td>
             <td>${row.paasMi ? '<span class="check">✓</span>' : '<span class="cross">✗</span>'}</td>
@@ -1681,7 +1764,7 @@ function renderTechExplorer() {
                 </div>
             </div>
             <div class="tech-card-toggle">Click to expand details ▼</div>
-            <div class="tech-card-detail">${tech.detail}</div>
+            <div class="tech-card-detail">${tech.detail}${tech.docUrl ? `<a href="${tech.docUrl}" target="_blank" rel="noopener" class="doc-link tech-doc-link">Read full documentation on MS Learn</a>` : ''}</div>
         </div>`;
     }).join('');
 }
@@ -1749,7 +1832,7 @@ function renderQuiz() {
                 }).join('')}
             </div>
             <div class="quiz-explanation ${answered !== undefined ? 'visible' : ''}" id="quiz-explanation">
-                <strong>Explanation:</strong> ${q.explanation}
+                <strong>Explanation:</strong> ${q.explanation}${q.docUrl ? `<a href="${q.docUrl}" target="_blank" rel="noopener" class="doc-link quiz-doc-link">Learn more on MS Learn</a>` : ''}
             </div>
             <div class="quiz-actions">
                 <button class="btn btn-secondary" onclick="prevQuestion()" ${quizState.currentIndex === 0 ? 'disabled' : ''}>← Previous</button>
