@@ -1192,8 +1192,9 @@ const techData = [
         • Asynchronous commit = better performance for remote replicas but potential data loss<br>
         • Supports readable secondaries for offloading reporting/backups<br>
         • Listener provides single connection endpoint for client applications<br>
-        • SQL Server 2017+ supports clusterless AG (no WSFC) for read-scale<br><br>
-        <strong>When to use:</strong> SQL Server on Azure VMs or on-premises needing HA with readable secondaries and grouped failover.`
+        • SQL Server 2017+ supports clusterless AG (no WSFC) for read-scale<br>
+        • <strong>⚠️ Database-level only:</strong> AGs do NOT protect system databases (master, msdb, model), logins, SQL Server Agent jobs, or linked servers — these must be manually synchronized across replicas<br><br>
+        <strong>When to use:</strong> SQL Server on Azure VMs or on-premises needing HA with readable secondaries and grouped failover. Combine with FCI if you also need instance-level protection.`
     },
     {
         name: "Failover Cluster Instance (FCI)",
@@ -1206,11 +1207,11 @@ const techData = [
         <strong>Key points:</strong><br>
         • Requires WSFC + shared storage (Azure Shared Disks, Storage Spaces Direct, or premium file shares)<br>
         • Single copy of data — no data replication overhead<br>
-        • Instance-level failover (all databases on the instance fail over together)<br>
+        • <strong>✅ Instance-level failover:</strong> Protects ALL databases (including system databases: master, msdb, model), logins, SQL Server Agent jobs, linked servers, and all instance-level objects<br>
         • Does NOT protect against storage failures (single point of failure for data)<br>
         • Cannot have readable secondaries (only one active node)<br>
         • Often combined with AG for both local HA and remote DR<br><br>
-        <strong>When to use:</strong> Instance-level HA requirement with shared storage; often the HA layer under an AG for full HA+DR coverage.`
+        <strong>When to use:</strong> When you need instance-level protection (system databases, logins, Agent jobs) with automatic failover; often used as the HA layer under an AG for full HA+DR coverage.`
     },
     {
         name: "Distributed Availability Groups (DAG)",
@@ -1536,7 +1537,18 @@ const quizData = [
         docUrl: "https://learn.microsoft.com/en-us/sql/sql-server/failover-clusters/windows/always-on-failover-cluster-instances-sql-server"
     },
     {
-        category: "RPO/RTO",
+        category: "Instance vs Database",
+        question: "You need to recommend an HA/DR strategy for a SQL Server on Azure VMs instance. The solution must protect all databases including system databases, SQL Server Agent jobs, and logins, and must support automatic failover. What should you recommend?",
+        options: [
+            "An Always On availability group",
+            "An Always On failover cluster instance",
+            "Log shipping",
+            "Transactional replication"
+        ],
+        correct: 1,
+        explanation: "A Failover Cluster Instance (FCI) provides instance-level protection, meaning it protects the entire SQL Server instance including system databases (master, msdb, model), logins, SQL Server Agent jobs, linked servers, and all user databases. An Always On AG works at the database level only — it cannot replicate system databases, logins, or Agent jobs (those must be manually synchronized). Transactional replication cannot replicate system databases, and neither transactional replication nor log shipping support automatic failover.",
+        docUrl: "https://learn.microsoft.com/en-us/sql/sql-server/failover-clusters/windows/always-on-failover-cluster-instances-sql-server"
+    },
         question: "An application can tolerate up to 5 minutes of data loss but needs RTO under 30 seconds. The database is Azure SQL Database. Which option is MOST appropriate?",
         options: [
             "General Purpose tier with zone redundancy",
@@ -1630,7 +1642,7 @@ const quizData = [
 
 const flashcardData = [
     { category: "Technologies", front: "What does AG stand for and what is its primary purpose?", back: "Always On Availability Group — provides HA/DR by replicating a group of databases to secondary replicas. Supports synchronous (zero data loss) and asynchronous commit modes. Requires WSFC on Windows." },
-    { category: "Technologies", front: "What is a Failover Cluster Instance (FCI)?", back: "Instance-level HA using shared storage. Only one node is active at a time. If it fails, another WSFC node takes ownership of the shared storage. Does NOT provide readable secondaries." },
+    { category: "Technologies", front: "What is a Failover Cluster Instance (FCI)?", back: "Instance-level HA using shared storage. Protects the ENTIRE instance: all databases (including system DBs), logins, SQL Server Agent jobs, and linked servers. Only one node is active at a time. If it fails, another WSFC node takes ownership of the shared storage. Does NOT provide readable secondaries." },
     { category: "Technologies", front: "What is a Distributed Availability Group (DAG)?", back: "Links two separate AGs (each with its own WSFC) for cross-cluster replication. Supports both sync and async data movement (async recommended for DR). Supports cross-domain, cross-OS-version. Available from SQL Server 2016. Ideal for migrations and multi-region DR." },
     { category: "Technologies", front: "What is WSFC and why is it required?", back: "Windows Server Failover Clustering — the underlying infrastructure for AGs and FCIs. Provides heartbeat, quorum, and failover orchestration. Does NOT replicate data. Linux alternative: Pacemaker." },
     { category: "Technologies", front: "What are Auto-Failover Groups?", back: "Azure PaaS feature for SQL DB and MI. Groups databases for geo-replication with automatic failover and listener endpoints (read-write + read-only). RPO ≤ 5s, RTO typically < 60 seconds once triggered. Grace period (≥1 hr) configurable before auto-failover triggers." },
@@ -1667,10 +1679,11 @@ const flashcardData = [
     { category: "Concepts", front: "What is the difference between local HA and geo-DR?", back: "Local HA: Protects against node/zone failure WITHIN a region (zone-redundant, built-in HA). Geo-DR: Protects against REGION failure (Failover Groups, Geo-Replication, Geo-Restore). Both are needed for complete BCDR." },
     { category: "Technologies", front: "What quorum witness types are available for WSFC?", back: "1) Node Majority (odd nodes, no witness needed) | 2) Disk Witness (shared disk) | 3) File Share Witness (SMB share) | 4) Cloud Witness (Azure Blob) — recommended for Azure VMs." },
     { category: "Concepts", front: "What happens to connection strings during a Failover Group failover?", back: "Nothing! Failover Groups provide listener endpoints (e.g., <group>.database.windows.net) that automatically redirect to the current primary. Applications don't need connection string changes." },
-    { category: "Technologies", front: "FCI vs AG: When would you choose FCI over AG?", back: "Choose FCI when: you need instance-level failover (all DBs together), you have shared storage, you want simpler licensing (Standard Edition). Choose AG when: you need readable secondaries, database-level control, or cross-region DR." },
+    { category: "Technologies", front: "FCI vs AG: When would you choose FCI over AG?", back: "Choose FCI when: you need instance-level failover (protecting system databases, logins, Agent jobs, linked servers), you have shared storage, you want simpler licensing (Standard Edition). Choose AG when: you need readable secondaries, database-level control, or cross-region DR. AGs CANNOT protect system databases or instance-level objects." },
     { category: "RPO/RTO", front: "What is the maximum retention period for PITR in Azure SQL?", back: "1-35 days (configurable, default 7 days). For longer retention, use Long-Term Retention (LTR) which supports up to 10 years. LTR stores weekly/monthly/yearly full backup copies." },
     { category: "Concepts", front: "What is split-brain and how does WSFC prevent it?", back: "Split-brain: both sides of a partitioned cluster think they're primary, causing data corruption. WSFC prevents it via quorum — a partition must have majority votes to remain online. The minority side shuts down." },
-    { category: "Platform Mapping", front: "Does Azure SQL Database support FCI (Failover Cluster Instance)?", back: "NO. FCI requires OS-level access and shared storage management. Only available on SQL Server on VMs (IaaS). PaaS services use built-in platform-managed HA instead." }
+    { category: "Platform Mapping", front: "Does Azure SQL Database support FCI (Failover Cluster Instance)?", back: "NO. FCI requires OS-level access and shared storage management. Only available on SQL Server on VMs (IaaS). PaaS services use built-in platform-managed HA instead." },
+    { category: "Technologies", front: "What instance-level objects does an Always On AG NOT protect?", back: "AGs operate at the DATABASE level only. They do NOT protect: system databases (master, msdb, model), logins, SQL Server Agent jobs, linked servers, or server-level configurations. These must be manually synchronized across replicas. Use FCI if you need instance-level protection." }
 ];
 
 // ==================== APP STATE ====================
