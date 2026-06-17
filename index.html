@@ -843,6 +843,20 @@
             background: rgba(255,82,82,0.2);
         }
 
+        /* ==================== FOOTER ==================== */
+        .footer {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 1rem 2rem 2rem;
+            color: var(--text-muted);
+            font-size: 0.8rem;
+            text-align: right;
+        }
+
+        .footer strong {
+            color: var(--text-secondary);
+        }
+
         /* ==================== RESPONSIVE ==================== */
         @media (max-width: 768px) {
             .header-content { flex-direction: column; align-items: flex-start; }
@@ -1068,6 +1082,10 @@
     </section>
 
 </main>
+
+<footer class="footer">
+    <strong>Last Updated:</strong> <span id="last-updated">Loading...</span>
+</footer>
 
 <script>
 // ==================== DATA ====================
@@ -2075,11 +2093,28 @@ function resetProgress() {
     }
 }
 
+function renderLastUpdated() {
+    const target = document.getElementById('last-updated');
+    if (!target) return;
+    const modified = new Date(document.lastModified);
+    target.textContent = Number.isNaN(modified.getTime())
+        ? 'Unavailable'
+        : modified.toLocaleString(undefined, {
+            year: 'numeric',
+            month: 'short',
+            day: 'numeric',
+            hour: 'numeric',
+            minute: '2-digit',
+            timeZoneName: 'short'
+        });
+}
+
 // ==================== INIT ====================
 renderMatrix();
 renderTechExplorer();
 renderQuiz();
 renderFlashcards();
+renderLastUpdated();
 </script>
 </body>
 </html>

@@ -268,6 +268,15 @@
         .dashboard-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
         .dashboard-stat { font-size: 42px; font-weight: 800; color: var(--cp-accent); }
         .callout { background: var(--cp-accent-soft); border: 1px solid var(--cp-accent); border-radius: 16px; padding: 18px; margin-bottom: 24px; }
+        .footer {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 16px 32px 32px;
+            color: var(--cp-text-muted);
+            font-size: 13px;
+            text-align: right;
+        }
+        .footer strong { color: var(--cp-text-soft); }
         @media (max-width: 768px) {
             .header-content { align-items: flex-start; }
             .main { padding: 20px; }
@@ -362,6 +371,10 @@
         <div class="dashboard-grid" id="dashboard-grid"></div>
     </section>
 </main>
+
+<footer class="footer">
+    <strong>Last Updated:</strong> <span id="last-updated">Loading...</span>
+</footer>
 
 <script>
 const matrixData = [
@@ -710,10 +723,27 @@ function resetProgress() {
     }
 }
 
+function renderLastUpdated() {
+    const target = document.getElementById("last-updated");
+    if (!target) return;
+    const modified = new Date(document.lastModified);
+    target.textContent = Number.isNaN(modified.getTime())
+        ? "Unavailable"
+        : modified.toLocaleString(undefined, {
+            year: "numeric",
+            month: "short",
+            day: "numeric",
+            hour: "numeric",
+            minute: "2-digit",
+            timeZoneName: "short"
+        });
+}
+
 renderCompare();
 renderTechExplorer();
 renderQuiz();
 renderFlashcards();
+renderLastUpdated();
 </script>
 </body>
 </html>
