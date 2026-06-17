@@ -128,6 +128,22 @@
             font-weight: 600;
         }
 
+        .page-link {
+            padding: 0.6rem 1.2rem;
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            font-weight: 500;
+            border-radius: var(--radius-sm);
+            text-decoration: none;
+            white-space: nowrap;
+            transition: var(--transition);
+        }
+
+        .page-link:hover {
+            color: var(--text-primary);
+            background: var(--bg-card);
+        }
+
         /* Main Content */
         .main {
             max-width: 1400px;
@@ -912,6 +928,7 @@
             <button class="nav-btn" data-tab="quiz" role="tab">Quiz</button>
             <button class="nav-btn" data-tab="flashcards" role="tab">Flashcards</button>
             <button class="nav-btn" data-tab="progress" role="tab">Progress</button>
+            <a class="page-link" href="security.html">Security Hub</a>
         </nav>
     </div>
 </header>
@@ -1549,6 +1566,8 @@ const quizData = [
         explanation: "A Failover Cluster Instance (FCI) provides instance-level protection, meaning it protects the entire SQL Server instance including system databases (master, msdb, model), logins, SQL Server Agent jobs, linked servers, and all user databases. An Always On AG works at the database level only — it cannot replicate system databases, logins, or Agent jobs (those must be manually synchronized). Transactional replication cannot replicate system databases, and neither transactional replication nor log shipping support automatic failover.",
         docUrl: "https://learn.microsoft.com/en-us/sql/sql-server/failover-clusters/windows/always-on-failover-cluster-instances-sql-server"
     },
+    {
+        category: "Scenario",
         question: "An application can tolerate up to 5 minutes of data loss but needs RTO under 30 seconds. The database is Azure SQL Database. Which option is MOST appropriate?",
         options: [
             "General Purpose tier with zone redundancy",

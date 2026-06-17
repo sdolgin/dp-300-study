@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DP-300 Security Mastery - Study Hub</title>
+    <script>
+      (() => {
+        const param = new URLSearchParams(window.location.search).get("scoutTheme");
+        const theme =
+          param || (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+        document.documentElement.setAttribute("data-theme", theme);
+      })();
+    </script>
+    <style>
+        :root {
+          color-scheme: light;
+          --cp-bg: #f7f4ef;
+          --cp-bg-elevated: #fcfbf8;
+          --cp-surface: #ffffff;
+          --cp-surface-soft: #f5f5f5;
+          --cp-border: #dedede;
+          --cp-border-strong: #919191;
+          --cp-text: #242424;
+          --cp-text-muted: #5c5c5c;
+          --cp-text-soft: #6f6f6f;
+          --cp-accent: #b11f4b;
+          --cp-accent-hover: #9a1a41;
+          --cp-accent-soft: rgba(177, 31, 75, 0.08);
+          --cp-accent-fg: #ffffff;
+          --cp-success: #16a34a;
+          --cp-danger: #dc2626;
+          --cp-warning: #f59e0b;
+          --cp-link: #0078d4;
+          --cp-shadow: 0 18px 48px rgba(0, 0, 0, 0.12);
+          --cp-overlay: rgba(255, 255, 255, 0.8);
+          --cp-panel: rgba(255, 255, 255, 0.86);
+          --cp-panel-strong: rgba(255, 255, 255, 0.96);
+          --cp-sheen: rgba(255, 255, 255, 0.55);
+          --cp-highlight: rgba(177, 31, 75, 0.12);
+        }
+        html[data-theme="dark"] {
+          color-scheme: dark;
+          --cp-bg: #3d3b3a;
+          --cp-bg-elevated: #343231;
+          --cp-surface: #292929;
+          --cp-surface-soft: #2e2e2e;
+          --cp-border: #474747;
+          --cp-border-strong: #5f5f5f;
+          --cp-text: #dedede;
+          --cp-text-muted: #919191;
+          --cp-text-soft: #b0b0b0;
+          --cp-accent: #fd8ea1;
+          --cp-accent-hover: #fb7b91;
+          --cp-accent-soft: rgba(253, 142, 161, 0.14);
+          --cp-accent-fg: #1a1a1a;
+          --cp-success: #4ade80;
+          --cp-danger: #f87171;
+          --cp-warning: #fbbf24;
+          --cp-link: #4da6ff;
+          --cp-shadow: 0 18px 48px rgba(0, 0, 0, 0.32);
+          --cp-overlay: rgba(41, 41, 41, 0.88);
+          --cp-panel: rgba(41, 41, 41, 0.72);
+          --cp-panel-strong: rgba(41, 41, 41, 0.96);
+          --cp-sheen: rgba(255, 255, 255, 0.04);
+          --cp-highlight: rgba(253, 142, 161, 0.12);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: "Segoe UI", Aptos, Calibri, -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--cp-bg);
+            color: var(--cp-text);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+        .header {
+            background: var(--cp-bg-elevated);
+            border-bottom: 1px solid var(--cp-border);
+            padding: 24px 32px;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+        .logo { display: flex; align-items: center; gap: 12px; }
+        .logo-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: 0.625rem;
+            background: var(--cp-accent);
+            color: var(--cp-accent-fg);
+            display: grid;
+            place-items: center;
+            font-weight: 700;
+        }
+        h1 { font-size: 22px; color: var(--cp-text); }
+        .logo-subtitle {
+            font-size: 12px;
+            color: var(--cp-text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .nav {
+            display: flex;
+            gap: 4px;
+            padding: 4px;
+            background: var(--cp-surface-soft);
+            border: 1px solid var(--cp-border);
+            border-radius: 0.625rem;
+            overflow-x: auto;
+        }
+        .nav-btn, .page-link {
+            padding: 10px 16px;
+            border: 0;
+            background: transparent;
+            color: var(--cp-text-muted);
+            border-radius: 0.625rem;
+            cursor: pointer;
+            font: inherit;
+            font-size: 14px;
+            font-weight: 600;
+            white-space: nowrap;
+            text-decoration: none;
+        }
+        .nav-btn:hover, .page-link:hover { color: var(--cp-text); background: var(--cp-accent-soft); }
+        .nav-btn.active { background: var(--cp-accent); color: var(--cp-accent-fg); }
+        .main { max-width: 1400px; margin: 0 auto; padding: 32px; }
+        .section { display: none; }
+        .section.active { display: block; }
+        .section-header { margin-bottom: 24px; }
+        .section-header h2 { font-size: 30px; margin-bottom: 8px; }
+        .section-header p { color: var(--cp-text-muted); }
+        .filters { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
+        .filter-btn {
+            padding: 8px 14px;
+            border: 1px solid var(--cp-border);
+            background: var(--cp-surface);
+            color: var(--cp-text-muted);
+            border-radius: 0.625rem;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        .filter-btn.active, .filter-btn:hover {
+            background: var(--cp-accent-soft);
+            border-color: var(--cp-accent);
+            color: var(--cp-text);
+        }
+        .table-wrap {
+            overflow-x: auto;
+            background: var(--cp-surface);
+            border: 1px solid var(--cp-border);
+            border-radius: 16px;
+            box-shadow: 0 0 2px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.14);
+        }
+        table { width: 100%; border-collapse: collapse; font-size: 14px; }
+        th, td { padding: 14px 12px; border-bottom: 1px solid var(--cp-border); text-align: left; vertical-align: top; }
+        th { background: var(--cp-surface-soft); color: var(--cp-text); font-weight: 700; white-space: nowrap; }
+        tr:last-child td { border-bottom: 0; }
+        tbody tr:hover td { background: var(--cp-accent-soft); }
+        .badge {
+            display: inline-flex;
+            padding: 3px 8px;
+            border: 1px solid var(--cp-border);
+            border-radius: 0.625rem;
+            color: var(--cp-text-muted);
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+        }
+        .badge.encryption, .badge.identity, .badge.network, .badge.compliance, .badge.auditing {
+            border-color: var(--cp-accent);
+            color: var(--cp-accent);
+            background: var(--cp-accent-soft);
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            gap: 20px;
+        }
+        .card, .quiz-card, .dashboard-card {
+            background: var(--cp-surface);
+            border: 1px solid var(--cp-border);
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 0 2px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.14);
+        }
+        .card { cursor: pointer; }
+        .card:hover { border-color: var(--cp-accent); }
+        .card h3 { margin: 8px 0; font-size: 19px; }
+        .muted { color: var(--cp-text-muted); }
+        .card-detail { display: none; margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--cp-border); color: var(--cp-text-muted); }
+        .card.expanded .card-detail { display: block; }
+        .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 16px; }
+        .stat { background: var(--cp-surface-soft); padding: 10px; border-radius: 0.625rem; }
+        .stat small { display: block; color: var(--cp-text-muted); text-transform: uppercase; font-size: 11px; }
+        .stat strong { display: block; margin-top: 4px; }
+        .quiz-container, .flashcard-container { max-width: 860px; margin: 0 auto; }
+        .progress-line { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; color: var(--cp-text-muted); }
+        .progress-bar { flex: 1; height: 8px; background: var(--cp-surface-soft); border-radius: 0.625rem; overflow: hidden; }
+        .progress-fill { height: 100%; background: var(--cp-accent); }
+        .quiz-category { color: var(--cp-accent); text-transform: uppercase; font-size: 12px; font-weight: 700; letter-spacing: 1px; margin-bottom: 8px; }
+        .quiz-question { font-size: 20px; font-weight: 600; margin-bottom: 18px; }
+        .quiz-options { display: grid; gap: 10px; }
+        .quiz-option {
+            border: 1px solid var(--cp-border);
+            border-radius: 0.625rem;
+            padding: 14px;
+            cursor: pointer;
+            display: flex;
+            gap: 10px;
+        }
+        .quiz-option:hover { border-color: var(--cp-accent); background: var(--cp-accent-soft); }
+        .quiz-option.disabled { cursor: default; }
+        .quiz-option.correct { border-color: var(--cp-success); color: var(--cp-success); }
+        .quiz-option.incorrect { border-color: var(--cp-danger); color: var(--cp-danger); }
+        .option-letter { font-weight: 700; }
+        .quiz-explanation {
+            display: none;
+            margin-top: 18px;
+            padding: 16px;
+            background: var(--cp-surface-soft);
+            border-left: 4px solid var(--cp-accent);
+            border-radius: 0.625rem;
+            color: var(--cp-text-muted);
+        }
+        .quiz-explanation.visible { display: block; }
+        .actions { display: flex; justify-content: space-between; gap: 12px; margin-top: 18px; flex-wrap: wrap; }
+        .btn {
+            border: 1px solid var(--cp-border);
+            background: var(--cp-surface-soft);
+            color: var(--cp-text);
+            border-radius: 0.625rem;
+            padding: 10px 16px;
+            cursor: pointer;
+            font-weight: 700;
+        }
+        .btn.primary { background: var(--cp-accent); color: var(--cp-accent-fg); border-color: var(--cp-accent); }
+        .btn:disabled { opacity: 0.45; cursor: not-allowed; }
+        .flashcard {
+            min-height: 310px;
+            border: 1px solid var(--cp-border);
+            background: var(--cp-surface);
+            border-radius: 16px;
+            padding: 36px;
+            display: grid;
+            place-items: center;
+            text-align: center;
+            cursor: pointer;
+            box-shadow: 0 0 2px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.14);
+        }
+        .flashcard .answer { display: none; color: var(--cp-text-muted); }
+        .flashcard.flipped .prompt { display: none; }
+        .flashcard.flipped .answer { display: block; }
+        .flashcard-label { color: var(--cp-accent); text-transform: uppercase; letter-spacing: 1px; font-size: 12px; font-weight: 700; margin-bottom: 20px; }
+        .flashcard-text { font-size: 22px; font-weight: 600; }
+        .doc-link { color: var(--cp-link); text-decoration: none; font-weight: 700; display: inline-block; margin-top: 10px; }
+        .doc-link:hover { text-decoration: underline; }
+        .dashboard-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
+        .dashboard-stat { font-size: 42px; font-weight: 800; color: var(--cp-accent); }
+        .callout { background: var(--cp-accent-soft); border: 1px solid var(--cp-accent); border-radius: 16px; padding: 18px; margin-bottom: 24px; }
+        @media (max-width: 768px) {
+            .header-content { align-items: flex-start; }
+            .main { padding: 20px; }
+            .grid { grid-template-columns: 1fr; }
+            .stat-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+<header class="header">
+    <div class="header-content">
+        <div class="logo">
+            <div class="logo-icon">SEC</div>
+            <div>
+                <h1>DP-300 Security Mastery</h1>
+                <div class="logo-subtitle">Azure SQL Security, Compliance, and Governance</div>
+            </div>
+        </div>
+        <nav class="nav" role="tablist">
+            <button class="nav-btn active" data-tab="compare" role="tab" aria-selected="true">Compare</button>
+            <button class="nav-btn" data-tab="explore" role="tab">Explore</button>
+            <button class="nav-btn" data-tab="quiz" role="tab">Quiz</button>
+            <button class="nav-btn" data-tab="flashcards" role="tab">Flashcards</button>
+            <button class="nav-btn" data-tab="progress" role="tab">Progress</button>
+            <a class="page-link" href="index.html">HADR Hub</a>
+        </nav>
+    </div>
+</header>
+
+<main class="main">
+    <section id="section-compare" class="section active">
+        <div class="section-header">
+            <h2>Security Comparison Matrix</h2>
+            <p>Compare DP-300 security controls by exam area, platform, purpose, and key implementation considerations.</p>
+        </div>
+        <div class="callout"><strong>Exam focus:</strong> DP-300 security questions usually ask you to choose the right control, not just define it. Know whether the requirement is encryption at rest, client-side column protection, network isolation, least privilege, auditing evidence, or tamper evidence.</div>
+        <div class="filters">
+            <button class="filter-btn active" data-filter="all">All Controls</button>
+            <button class="filter-btn" data-filter="Encryption">Encryption</button>
+            <button class="filter-btn" data-filter="Identity">Identity</button>
+            <button class="filter-btn" data-filter="Network">Network</button>
+            <button class="filter-btn" data-filter="Compliance">Compliance</button>
+            <button class="filter-btn" data-filter="Auditing">Auditing</button>
+        </div>
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Control</th>
+                        <th>Area</th>
+                        <th>SQL Server on VM</th>
+                        <th>Azure SQL Database</th>
+                        <th>Azure SQL MI</th>
+                        <th>Primary Use</th>
+                        <th>Exam Consideration</th>
+                    </tr>
+                </thead>
+                <tbody id="compare-body"></tbody>
+            </table>
+        </div>
+    </section>
+
+    <section id="section-explore" class="section">
+        <div class="section-header">
+            <h2>Technology Explorer</h2>
+            <p>Click a card to expand the DP-300 decision points and implementation cautions.</p>
+        </div>
+        <div class="grid" id="tech-grid"></div>
+    </section>
+
+    <section id="section-quiz" class="section">
+        <div class="section-header">
+            <h2>Scenario Quiz</h2>
+            <p>Practice exam-style questions focused on choosing the right security control.</p>
+        </div>
+        <div class="quiz-container" id="quiz-container"></div>
+    </section>
+
+    <section id="section-flashcards" class="section">
+        <div class="section-header">
+            <h2>Flashcard Deck</h2>
+            <p>Review short prompts for encryption, network controls, auditing, identity, and compliance.</p>
+        </div>
+        <div class="flashcard-container" id="flashcard-container"></div>
+    </section>
+
+    <section id="section-progress" class="section">
+        <div class="section-header">
+            <h2>Progress Dashboard</h2>
+            <p>Track quiz attempts and flashcard mastery in this browser.</p>
+        </div>
+        <div class="dashboard-grid" id="dashboard-grid"></div>
+    </section>
+</main>
+
+<script>
+const matrixData = [
+    { control: "Transparent Data Encryption", area: "Encryption", vm: "SQL Server TDE", db: "Enabled by default", mi: "Enabled by default", purpose: "Encrypt database files, logs, and backups at rest", considerations: "Does not protect data from privileged users or encrypt query results", docUrl: "https://learn.microsoft.com/en-us/azure/azure-sql/database/transparent-data-encryption-tde-overview?view=azuresql" },
+    { control: "Always Encrypted", area: "Encryption", vm: "Supported with drivers", db: "Supported", mi: "Supported", purpose: "Client-side encryption for sensitive columns", considerations: "Protects from DBAs and cloud operators; app controls keys", docUrl: "https://learn.microsoft.com/en-us/sql/relational-databases/security/encryption/always-encrypted-database-engine?view=sql-server-ver17" },
+    { control: "Always Encrypted with Secure Enclaves", area: "Encryption", vm: "SQL Server 2019+ Windows", db: "Yes", mi: "Not listed in support article", purpose: "Richer confidential queries over encrypted columns", considerations: "Support scope matters; use enclave-enabled drivers and attestation where required", docUrl: "https://learn.microsoft.com/en-us/sql/relational-databases/security/encryption/always-encrypted-enclaves?view=sql-server-ver17" },
+    { control: "Cell-Level Encryption", area: "Encryption", vm: "Supported", db: "Supported", mi: "Supported", purpose: "T-SQL function-based encryption for selected values", considerations: "App or T-SQL code must manage EncryptByKey and DecryptByKey patterns", docUrl: "https://learn.microsoft.com/en-us/sql/relational-databases/security/encryption/encrypt-a-column-of-data?view=sql-server-ver17" },
+    { control: "TLS / Encryption in Transit", area: "Encryption", vm: "Configure SQL Server certificates", db: "Required by service", mi: "Required by service", purpose: "Protect connections over the network", considerations: "Not a substitute for encryption at rest or column-level encryption", docUrl: "https://learn.microsoft.com/en-us/azure/azure-sql/database/connect-query-content-reference-guide?view=azuresql" },
+    { control: "Microsoft Entra Authentication", area: "Identity", vm: "Available with configuration", db: "Supported", mi: "Supported", purpose: "Centralized identity and MFA-capable authentication", considerations: "Prefer Entra groups over individual users for manageability", docUrl: "https://learn.microsoft.com/en-us/azure/azure-sql/database/authentication-aad-overview?view=azuresql" },
+    { control: "SQL Authentication", area: "Identity", vm: "Supported", db: "Supported", mi: "Supported", purpose: "Database login authentication", considerations: "Use strong password policy; Entra is preferred for enterprise access", docUrl: "https://learn.microsoft.com/en-us/azure/azure-sql/database/logins-create-manage?view=azuresql" },
+    { control: "Database Roles and Object Permissions", area: "Identity", vm: "Supported", db: "Supported", mi: "Supported", purpose: "Least privilege inside the database", considerations: "Azure RBAC does not grant SELECT or EXECUTE inside databases", docUrl: "https://learn.microsoft.com/en-us/sql/relational-databases/security/authentication-access/database-level-roles?view=sql-server-ver17" },
+    { control: "Row-Level Security", area: "Compliance", vm: "Supported", db: "Supported", mi: "Supported", purpose: "Filter or block rows by predicate", considerations: "Enforces row access in the database tier regardless of app path", docUrl: "https://learn.microsoft.com/en-us/sql/relational-databases/security/row-level-security?view=sql-server-ver17" },
+    { control: "Dynamic Data Masking", area: "Compliance", vm: "Supported", db: "Supported", mi: "Supported", purpose: "Mask sensitive values in result sets", considerations: "Not encryption; privileged users can see unmasked data", docUrl: "https://learn.microsoft.com/en-us/azure/azure-sql/database/dynamic-data-masking-overview?view=azuresql" },
+    { control: "Data Discovery and Classification", area: "Compliance", vm: "SSMS and SQL tooling", db: "Supported", mi: "Supported", purpose: "Label and report sensitive data", considerations: "Discovery labels do not enforce access by themselves", docUrl: "https://learn.microsoft.com/en-us/azure/azure-sql/database/data-discovery-and-classification-overview?view=azuresql" },
+    { control: "Ledger", area: "Compliance", vm: "SQL Server 2022+", db: "Supported", mi: "Supported", purpose: "Tamper-evident data integrity proof", considerations: "Choose when auditors need cryptographic proof, not just audit records", docUrl: "https://learn.microsoft.com/en-us/sql/relational-databases/security/ledger/ledger-overview?view=sql-server-ver17" },
+    { control: "Auditing", area: "Auditing", vm: "SQL Server Audit", db: "Azure SQL Auditing", mi: "Azure SQL Auditing", purpose: "Capture database events for investigation and compliance", considerations: "Targets include Storage, Log Analytics, and Event Hubs", docUrl: "https://learn.microsoft.com/en-us/azure/azure-sql/database/auditing-overview?view=azuresql" },
+    { control: "Microsoft Defender for SQL", area: "Auditing", vm: "Supported through Defender", db: "Supported", mi: "Supported", purpose: "Threat detection, vulnerability findings, and alerts", considerations: "Complements auditing; does not replace least privilege", docUrl: "https://learn.microsoft.com/en-us/azure/defender-for-cloud/defender-for-sql-introduction" },
+    { control: "Server and Database Firewall Rules", area: "Network", vm: "NSG and host firewall", db: "Supported", mi: "VNet based access", purpose: "Restrict allowed source IPs", considerations: "Allow Azure services is broad; prefer explicit IPs or private access", docUrl: "https://learn.microsoft.com/en-us/azure/azure-sql/database/firewall-configure?view=azuresql" },
+    { control: "Private Link / Private Endpoint", area: "Network", vm: "Use private IPs", db: "Supported", mi: "Native VNet placement", purpose: "Private connectivity over Azure backbone", considerations: "Private endpoint does not automatically disable public network access", docUrl: "https://learn.microsoft.com/en-us/azure/azure-sql/database/private-endpoint-overview?view=azuresql" },
+    { control: "Virtual Network Service Endpoints", area: "Network", vm: "N/A", db: "Supported", mi: "N/A", purpose: "Restrict SQL Database to selected VNets", considerations: "Public endpoint remains; Private Link is stronger isolation", docUrl: "https://learn.microsoft.com/en-us/azure/azure-sql/database/vnet-service-endpoint-rule-overview?view=azuresql" },
+    { control: "Change Tracking", area: "Compliance", vm: "Supported", db: "Supported", mi: "Supported", purpose: "Identify rows changed since a sync point", considerations: "Lightweight sync aid; not a security audit trail", docUrl: "https://learn.microsoft.com/en-us/sql/relational-databases/track-changes/about-change-tracking-sql-server?view=sql-server-ver17" }
+];
+
+const techData = [
+    { name: "Transparent Data Encryption", category: "Encryption", examFocus: "At-rest protection", bestFor: "Meeting baseline encryption requirements for files, logs, and backups", watchOut: "Does not hide data from administrators or applications", detail: "TDE encrypts the database encryption key hierarchy at the storage layer. Azure SQL Database and Managed Instance enable it by default. For customer-managed keys, integrate with Azure Key Vault and plan key rotation and access controls.", docUrl: "https://learn.microsoft.com/en-us/azure/azure-sql/database/transparent-data-encryption-tde-overview?view=azuresql" },
+    { name: "Always Encrypted", category: "Encryption", examFocus: "Client-side column protection", bestFor: "Protecting PII from DBAs, operators, and cloud admins", watchOut: "Requires compatible drivers and application changes", detail: "Encryption and decryption happen in the client driver. Deterministic encryption supports equality comparisons but reveals patterns; randomized encryption offers stronger confidentiality but fewer operations.", docUrl: "https://learn.microsoft.com/en-us/sql/relational-databases/security/encryption/always-encrypted-database-engine?view=sql-server-ver17" },
+    { name: "Always Encrypted with Secure Enclaves", category: "Encryption", examFocus: "Confidential computation", bestFor: "Pattern matching, range comparisons, and in-place encryption operations", watchOut: "Platform support and attestation details are testable", detail: "Secure enclaves allow selected computations inside a protected memory region. Microsoft Learn lists SQL Server 2019+ on Windows and Azure SQL Database; the support article does not list Azure SQL Managed Instance.", docUrl: "https://learn.microsoft.com/en-us/sql/relational-databases/security/encryption/always-encrypted-enclaves?view=sql-server-ver17" },
+    { name: "Cell-Level Encryption", category: "Encryption", examFocus: "T-SQL encryption functions", bestFor: "Legacy or targeted encryption where code controls encrypt and decrypt calls", watchOut: "Less transparent than Always Encrypted", detail: "Cell-level encryption uses certificates, symmetric keys, and functions such as EncryptByKey and DecryptByKey. It is flexible but puts more responsibility on database code and key handling.", docUrl: "https://learn.microsoft.com/en-us/sql/relational-databases/security/encryption/encrypt-a-column-of-data?view=sql-server-ver17" },
+    { name: "Microsoft Entra Authentication", category: "Identity", examFocus: "Centralized identity", bestFor: "Enterprise users, groups, MFA, and conditional access alignment", watchOut: "Authentication is separate from database permissions", detail: "Use Entra users, groups, and managed identities where possible. A user still needs database permissions through roles or grants after authentication succeeds.", docUrl: "https://learn.microsoft.com/en-us/azure/azure-sql/database/authentication-aad-overview?view=azuresql" },
+    { name: "Database Roles and Permissions", category: "Identity", examFocus: "Least privilege", bestFor: "Controlling SELECT, EXECUTE, ALTER, and schema access", watchOut: "Azure RBAC controls Azure resources, not table access", detail: "Use built-in roles carefully and prefer custom roles or explicit grants for least privilege. Avoid db_owner unless full database control is required.", docUrl: "https://learn.microsoft.com/en-us/sql/relational-databases/security/authentication-access/database-level-roles?view=sql-server-ver17" },
+    { name: "Row-Level Security", category: "Compliance", examFocus: "Predicate-based row filtering", bestFor: "Multi-tenant tables and regional data separation", watchOut: "Predicate logic quality determines effectiveness", detail: "RLS uses inline table-valued functions and security policies to filter or block rows. It enforces rules in the database tier, so apps cannot bypass it by using a different query path.", docUrl: "https://learn.microsoft.com/en-us/sql/relational-databases/security/row-level-security?view=sql-server-ver17" },
+    { name: "Dynamic Data Masking", category: "Compliance", examFocus: "Presentation masking", bestFor: "Reducing accidental exposure in result sets", watchOut: "Not encryption and not a privileged-user boundary", detail: "DDM masks query results for users without UNMASK permission. Use it for simple obfuscation, not as the only protection for highly sensitive data.", docUrl: "https://learn.microsoft.com/en-us/azure/azure-sql/database/dynamic-data-masking-overview?view=azuresql" },
+    { name: "Data Discovery and Classification", category: "Compliance", examFocus: "Find and label sensitive data", bestFor: "Compliance reporting and audit scoping", watchOut: "Labels do not enforce access", detail: "Classification helps identify columns containing sensitive data and report on them. Pair it with permissions, encryption, masking, RLS, and auditing for enforcement.", docUrl: "https://learn.microsoft.com/en-us/azure/azure-sql/database/data-discovery-and-classification-overview?view=azuresql" },
+    { name: "Ledger", category: "Compliance", examFocus: "Tamper evidence", bestFor: "Auditor-verifiable integrity of table history", watchOut: "Not the same as encryption or normal audit logging", detail: "Ledger creates cryptographic digests that can prove data has not been tampered with. Choose it when the scenario asks for immutable or tamper-evident proof.", docUrl: "https://learn.microsoft.com/en-us/sql/relational-databases/security/ledger/ledger-overview?view=sql-server-ver17" },
+    { name: "Azure SQL Auditing", category: "Auditing", examFocus: "Event capture", bestFor: "Compliance evidence and investigation trails", watchOut: "High-volume workloads may need filtering and target planning", detail: "Auditing can write to Storage, Log Analytics, or Event Hubs. Server-level auditing is broad; database-level auditing and filters can reduce noise.", docUrl: "https://learn.microsoft.com/en-us/azure/azure-sql/database/auditing-overview?view=azuresql" },
+    { name: "Microsoft Defender for SQL", category: "Auditing", examFocus: "Threat protection", bestFor: "Detecting suspicious activity and vulnerability exposure", watchOut: "It augments, not replaces, hardening and auditing", detail: "Defender for SQL provides vulnerability assessments and advanced threat protection alerts. It should be combined with least privilege, network restrictions, and auditing.", docUrl: "https://learn.microsoft.com/en-us/azure/defender-for-cloud/defender-for-sql-introduction" },
+    { name: "Firewall Rules", category: "Network", examFocus: "Source IP restrictions", bestFor: "Limiting public endpoint access", watchOut: "Allow Azure services is broad", detail: "Server-level and database-level firewall rules control access to Azure SQL Database public endpoints. Use explicit IP ranges and avoid broad exceptions where possible.", docUrl: "https://learn.microsoft.com/en-us/azure/azure-sql/database/firewall-configure?view=azuresql" },
+    { name: "Private Link", category: "Network", examFocus: "Private endpoint access", bestFor: "Keeping database traffic on private IP paths", watchOut: "Disable public network access separately", detail: "Private Link exposes Azure SQL through a private endpoint in your VNet. Configure DNS correctly and explicitly deny public network access when the scenario requires private-only access.", docUrl: "https://learn.microsoft.com/en-us/azure/azure-sql/database/private-endpoint-overview?view=azuresql" },
+    { name: "Change Tracking", category: "Compliance", examFocus: "Sync changed rows", bestFor: "Applications that need to know which rows changed", watchOut: "Not a security audit or full change history feature", detail: "Change Tracking tells an application that a row changed since a prior version. It does not capture before and after values like CDC and is not a tamper-evident audit trail.", docUrl: "https://learn.microsoft.com/en-us/sql/relational-databases/track-changes/about-change-tracking-sql-server?view=sql-server-ver17" }
+];
+
+const quizData = [
+    { category: "Encryption", question: "A customer wants database files, log files, and backups encrypted at rest with no application changes. Which feature is the best fit?", options: ["Always Encrypted", "Transparent Data Encryption", "Dynamic Data Masking", "Row-Level Security"], correct: 1, explanation: "TDE encrypts database files, logs, and backups at rest without application changes.", docUrl: "https://learn.microsoft.com/en-us/azure/azure-sql/database/transparent-data-encryption-tde-overview?view=azuresql" },
+    { category: "Encryption", question: "A DBA must not be able to view plaintext credit card numbers. Which control is designed for that requirement?", options: ["TDE", "Always Encrypted", "Firewall rules", "Data classification"], correct: 1, explanation: "Always Encrypted encrypts and decrypts data client-side, so privileged database users cannot see plaintext values.", docUrl: "https://learn.microsoft.com/en-us/sql/relational-databases/security/encryption/always-encrypted-database-engine?view=sql-server-ver17" },
+    { category: "Encryption", question: "Which Always Encrypted type supports equality searches but can reveal repeated value patterns?", options: ["Randomized", "Deterministic", "TDE", "TLS"], correct: 1, explanation: "Deterministic encryption produces the same ciphertext for the same plaintext, enabling equality operations while revealing patterns.", docUrl: "https://learn.microsoft.com/en-us/sql/relational-databases/security/encryption/always-encrypted-database-engine?view=sql-server-ver17" },
+    { category: "Encryption", question: "A query must perform richer operations over encrypted columns in Azure SQL Database. Which feature should you evaluate?", options: ["Always Encrypted with secure enclaves", "Data Discovery and Classification", "SQL Auditing", "Server firewall rules"], correct: 0, explanation: "Secure enclaves extend Always Encrypted scenarios by enabling selected computations over encrypted data.", docUrl: "https://learn.microsoft.com/en-us/azure/azure-sql/database/always-encrypted-enclaves-getting-started?view=azuresql" },
+    { category: "Encryption", question: "Which feature uses certificates, symmetric keys, EncryptByKey, and DecryptByKey?", options: ["Cell-level encryption", "Private Link", "Defender for SQL", "Dynamic Data Masking"], correct: 0, explanation: "Cell-level encryption can use SQL cryptographic objects and T-SQL encryption functions.", docUrl: "https://learn.microsoft.com/en-us/sql/relational-databases/security/encryption/encrypt-a-column-of-data?view=sql-server-ver17" },
+    { category: "Network", question: "A database must be reachable only over a private IP in a VNet. Which option is best?", options: ["Private Link private endpoint", "Allow Azure services", "Dynamic Data Masking", "TDE"], correct: 0, explanation: "Private Link provides private endpoint access through a private IP in the VNet.", docUrl: "https://learn.microsoft.com/en-us/azure/azure-sql/database/private-endpoint-overview?view=azuresql" },
+    { category: "Network", question: "After creating a private endpoint, what must you also do to enforce private-only Azure SQL access?", options: ["Disable public network access", "Enable SQL authentication", "Turn off TDE", "Grant db_owner"], correct: 0, explanation: "A private endpoint does not automatically block public access; deny public network access separately.", docUrl: "https://learn.microsoft.com/en-us/azure/azure-sql/database/private-endpoint-overview?view=azuresql" },
+    { category: "Network", question: "Which firewall setting is broad and should usually be avoided when the scenario asks for least network exposure?", options: ["Allow Azure services and resources to access this server", "Database-level firewall rule", "Specific client IP rule", "Private DNS zone"], correct: 0, explanation: "The Allow Azure services setting permits broad Azure-origin access and is less restrictive than explicit rules or private access.", docUrl: "https://learn.microsoft.com/en-us/azure/azure-sql/database/network-access-controls-overview?view=azuresql" },
+    { category: "Identity", question: "Which authentication approach best supports centralized identity, groups, MFA, and Conditional Access alignment?", options: ["SQL authentication", "Microsoft Entra authentication", "TDE", "Ledger"], correct: 1, explanation: "Microsoft Entra authentication integrates Azure SQL identity with centralized identity controls.", docUrl: "https://learn.microsoft.com/en-us/azure/azure-sql/database/authentication-aad-overview?view=azuresql" },
+    { category: "Authorization", question: "Which statement best describes Azure RBAC compared with SQL permissions?", options: ["Azure RBAC grants table SELECT", "SQL permissions control data-plane actions inside the database", "TDE grants EXECUTE", "Private Link grants INSERT"], correct: 1, explanation: "Azure RBAC controls Azure resource management. SQL permissions control database actions like SELECT and EXECUTE.", docUrl: "https://learn.microsoft.com/en-us/azure/azure-sql/database/security-overview?view=azuresql" },
+    { category: "Authorization", question: "A developer only needs to execute stored procedures. Which approach best follows least privilege?", options: ["Grant db_owner", "Grant EXECUTE on required procedures or schema", "Make them server admin", "Enable Allow Azure services"], correct: 1, explanation: "Least privilege grants only the specific database permissions required, such as EXECUTE.", docUrl: "https://learn.microsoft.com/en-us/sql/relational-databases/security/authentication-access/database-level-roles?view=sql-server-ver17" },
+    { category: "Compliance", question: "A multi-tenant app must ensure each tenant can only read its own rows even if a query forgets a WHERE clause. What should you use?", options: ["Row-Level Security", "TDE", "Firewall rules", "Change Tracking"], correct: 0, explanation: "RLS enforces row filters in the database tier using security predicates.", docUrl: "https://learn.microsoft.com/en-us/sql/relational-databases/security/row-level-security?view=sql-server-ver17" },
+    { category: "Compliance", question: "A support user should see masked email addresses but the app does not need cryptographic protection. Which feature fits?", options: ["Dynamic Data Masking", "Always Encrypted", "Ledger", "Private Link"], correct: 0, explanation: "DDM masks result sets for users without permission to see unmasked data.", docUrl: "https://learn.microsoft.com/en-us/azure/azure-sql/database/dynamic-data-masking-overview?view=azuresql" },
+    { category: "Compliance", question: "Auditors need cryptographic proof that rows were not tampered with. Which feature should you evaluate?", options: ["Ledger", "Dynamic Data Masking", "SQL authentication", "Firewall rules"], correct: 0, explanation: "Ledger provides tamper-evidence and cryptographic verification for data integrity.", docUrl: "https://learn.microsoft.com/en-us/sql/relational-databases/security/ledger/ledger-overview?view=sql-server-ver17" },
+    { category: "Compliance", question: "The team classified PII columns and now expects SELECT to be blocked automatically. What should you explain?", options: ["Classification blocks access automatically", "Classification identifies and labels data but does not enforce access", "Classification disables SQL authentication", "Classification replaces auditing"], correct: 1, explanation: "Data Discovery and Classification helps identify and label sensitive data; enforcement requires permissions or other controls.", docUrl: "https://learn.microsoft.com/en-us/azure/azure-sql/database/data-discovery-and-classification-overview?view=azuresql" },
+    { category: "Auditing", question: "Which Azure SQL feature captures database events for compliance review and can write to Storage, Log Analytics, or Event Hubs?", options: ["Auditing", "TDE", "RLS", "Private Link"], correct: 0, explanation: "Azure SQL Auditing captures events and supports Storage, Log Analytics, and Event Hubs targets.", docUrl: "https://learn.microsoft.com/en-us/azure/azure-sql/database/auditing-overview?view=azuresql" },
+    { category: "Auditing", question: "A high-volume OLTP system generates too much audit noise. What is a reasonable design consideration?", options: ["Use database-level auditing and filters where appropriate", "Disable all auditing", "Use DDM instead of auditing", "Use TDE instead of auditing"], correct: 0, explanation: "Database-level auditing and filtering can reduce volume while keeping relevant evidence.", docUrl: "https://learn.microsoft.com/en-us/azure/azure-sql/database/auditing-overview?view=azuresql" },
+    { category: "Threat Protection", question: "Which service provides vulnerability findings and suspicious activity alerts for Azure SQL?", options: ["Microsoft Defender for SQL", "Change Tracking", "Data classification", "Cell-level encryption"], correct: 0, explanation: "Microsoft Defender for SQL provides vulnerability assessment and threat protection alerts.", docUrl: "https://learn.microsoft.com/en-us/azure/defender-for-cloud/defender-for-sql-introduction" },
+    { category: "Tracking", question: "A sync app only needs to know which rows changed since the last sync point. Which feature is most appropriate?", options: ["Change Tracking", "Ledger", "TDE", "Dynamic Data Masking"], correct: 0, explanation: "Change Tracking is a lightweight mechanism for identifying changed rows.", docUrl: "https://learn.microsoft.com/en-us/sql/relational-databases/track-changes/about-change-tracking-sql-server?view=sql-server-ver17" },
+    { category: "Tracking", question: "Which statement about Change Tracking is correct?", options: ["It is a tamper-evident audit ledger", "It identifies changed rows but is not a security audit trail", "It encrypts data at rest", "It masks query results"], correct: 1, explanation: "Change Tracking helps sync workloads identify changed rows; it does not provide a full security audit trail.", docUrl: "https://learn.microsoft.com/en-us/sql/relational-databases/track-changes/about-change-tracking-sql-server?view=sql-server-ver17" },
+    { category: "Platform", question: "Which platform is directly listed for Azure SQL Always Encrypted secure enclave getting-started guidance?", options: ["Azure SQL Managed Instance", "Azure SQL Database", "Azure Synapse serverless SQL pool", "SQL Server 2016 on Linux"], correct: 1, explanation: "The Azure SQL secure enclave getting-started article applies to Azure SQL Database.", docUrl: "https://learn.microsoft.com/en-us/azure/azure-sql/database/always-encrypted-enclaves-getting-started?view=azuresql" },
+    { category: "Platform", question: "Which network model is native to Azure SQL Managed Instance?", options: ["Managed Instance is deployed into your virtual network", "Managed Instance only supports public endpoints", "Managed Instance requires ExpressRoute", "Managed Instance cannot use private IPs"], correct: 0, explanation: "Azure SQL Managed Instance is deployed into a customer virtual network.", docUrl: "https://learn.microsoft.com/en-us/azure/azure-sql/managed-instance/connectivity-architecture-overview?view=azuresql" },
+    { category: "Scenario", question: "A customer asks for encryption that protects plaintext query results from privileged database users. Which answer is correct?", options: ["TDE", "Always Encrypted", "Firewall rule", "Auditing"], correct: 1, explanation: "Always Encrypted protects sensitive column plaintext from privileged users by decrypting only in the client driver.", docUrl: "https://learn.microsoft.com/en-us/sql/relational-databases/security/encryption/always-encrypted-database-engine?view=sql-server-ver17" },
+    { category: "Scenario", question: "A customer wants to reduce accidental exposure of salaries in ad hoc support queries but can tolerate privileged users seeing values. Which feature is simplest?", options: ["Dynamic Data Masking", "Always Encrypted with enclaves", "Ledger", "Private Endpoint"], correct: 0, explanation: "DDM is designed for masking result sets from non-privileged users, not for cryptographic isolation.", docUrl: "https://learn.microsoft.com/en-us/azure/azure-sql/database/dynamic-data-masking-overview?view=azuresql" },
+    { category: "Scenario", question: "A customer wants Azure SQL imports to avoid the broad Allow Azure services firewall rule. What is a better approach?", options: ["Run the import tooling from an allowed host or configure specific required IP ranges", "Disable TLS", "Use DDM", "Grant db_owner"], correct: 0, explanation: "Use a controlled source such as an allowed VM or specific ranges instead of broad Azure service access.", docUrl: "https://learn.microsoft.com/en-us/azure/azure-sql/database/network-access-controls-overview?view=azuresql" },
+    { category: "Scenario", question: "A requirement mentions GDPR reporting, sensitive data labels, and identifying where PII exists. Which feature is the best starting point?", options: ["Data Discovery and Classification", "TDE", "Private Link", "Change Tracking"], correct: 0, explanation: "Data Discovery and Classification is intended for discovering, labeling, and reporting sensitive data.", docUrl: "https://learn.microsoft.com/en-us/azure/azure-sql/database/data-discovery-and-classification-overview?view=azuresql" }
+];
+
+const flashcardData = [
+    { category: "Encryption", front: "What does TDE protect?", back: "Database files, transaction logs, and backups at rest. It does not hide plaintext query results from privileged users." },
+    { category: "Encryption", front: "What does Always Encrypted protect against?", back: "Disclosure of sensitive column plaintext to DBAs, operators, and cloud admins because encryption and decryption happen client-side." },
+    { category: "Encryption", front: "Deterministic Always Encrypted tradeoff?", back: "Supports equality operations but reveals repeated value patterns." },
+    { category: "Encryption", front: "Randomized Always Encrypted tradeoff?", back: "Stronger confidentiality, but fewer supported operations unless using secure enclaves." },
+    { category: "Encryption", front: "Secure enclave key exam nuance?", back: "Microsoft Learn lists SQL Server 2019+ on Windows and Azure SQL Database; the support article does not list Azure SQL Managed Instance." },
+    { category: "Encryption", front: "Cell-level encryption uses what objects?", back: "Certificates, symmetric keys, and functions such as EncryptByKey and DecryptByKey." },
+    { category: "Encryption", front: "TLS protects what?", back: "Data in transit over the network, not data at rest or from privileged users after query execution." },
+    { category: "Identity", front: "Why prefer Microsoft Entra authentication?", back: "Centralized identity, groups, MFA-capable access patterns, managed identities, and enterprise governance alignment." },
+    { category: "Identity", front: "Does authentication grant database access?", back: "No. Users still need SQL permissions or role membership." },
+    { category: "Authorization", front: "Azure RBAC vs SQL permissions?", back: "Azure RBAC controls Azure resource management; SQL permissions control data-plane actions inside the database." },
+    { category: "Authorization", front: "Least privilege for stored procedures?", back: "Grant EXECUTE only on required procedures or schema instead of broad roles like db_owner." },
+    { category: "Authorization", front: "Risk of db_owner?", back: "It grants broad database control and usually violates least privilege for normal app or support users." },
+    { category: "Network", front: "What does a server firewall rule do?", back: "Allows client public IP ranges to reach Azure SQL Database public endpoints." },
+    { category: "Network", front: "Why avoid Allow Azure services?", back: "It is broad and can allow many Azure-origin sources; explicit IPs or private access are more restrictive." },
+    { category: "Network", front: "Private Link purpose?", back: "Expose Azure SQL through a private endpoint in your VNet using a private IP." },
+    { category: "Network", front: "Does Private Link block public access automatically?", back: "No. Disable public network access separately when private-only access is required." },
+    { category: "Network", front: "Private endpoint DNS consideration?", back: "Clients should resolve the SQL server FQDN to the private endpoint address through private DNS." },
+    { category: "Compliance", front: "Row-Level Security purpose?", back: "Filter or block rows in the database tier using predicate functions and security policies." },
+    { category: "Compliance", front: "Dynamic Data Masking purpose?", back: "Mask sensitive values in result sets for users without permission to see unmasked values." },
+    { category: "Compliance", front: "Is DDM encryption?", back: "No. It is presentation masking; privileged users can see unmasked data." },
+    { category: "Compliance", front: "Data Discovery and Classification purpose?", back: "Find, label, and report sensitive data such as PII for compliance workflows." },
+    { category: "Compliance", front: "Does classification enforce access?", back: "No. Pair it with permissions, masking, encryption, RLS, and auditing." },
+    { category: "Compliance", front: "Ledger purpose?", back: "Provide tamper-evident cryptographic proof that data has not been altered improperly." },
+    { category: "Auditing", front: "Azure SQL Auditing target options?", back: "Azure Storage, Log Analytics, and Event Hubs." },
+    { category: "Auditing", front: "Server-level vs database-level auditing?", back: "Server-level is broad; database-level auditing can target specific database needs and reduce noise." },
+    { category: "Auditing", front: "Defender for SQL purpose?", back: "Threat protection alerts and vulnerability assessment findings for SQL resources." },
+    { category: "Auditing", front: "Does Defender replace auditing?", back: "No. It complements auditing, least privilege, network controls, and hardening." },
+    { category: "Tracking", front: "Change Tracking purpose?", back: "Tell applications which rows changed since a previous synchronization point." },
+    { category: "Tracking", front: "Is Change Tracking a security audit?", back: "No. It is a lightweight sync feature, not tamper-evident audit evidence." },
+    { category: "Tracking", front: "Change Tracking vs CDC?", back: "Change Tracking identifies changed rows; CDC captures richer change history with before or after details." },
+    { category: "Platform", front: "Azure SQL Database secure enclave support?", back: "Azure SQL Database is covered by the Azure SQL secure enclave getting-started documentation." },
+    { category: "Platform", front: "Azure SQL Managed Instance secure enclave nuance?", back: "The secure enclave support article does not list Managed Instance." },
+    { category: "Platform", front: "Managed Instance network model?", back: "Managed Instance is deployed into your virtual network." },
+    { category: "Scenario", front: "Requirement: protect backups at rest with no app change.", back: "Use Transparent Data Encryption." },
+    { category: "Scenario", front: "Requirement: DBA cannot read SSNs.", back: "Use Always Encrypted." },
+    { category: "Scenario", front: "Requirement: support users see masked values.", back: "Use Dynamic Data Masking if masking is sufficient." },
+    { category: "Scenario", front: "Requirement: users only see their tenant rows.", back: "Use Row-Level Security." },
+    { category: "Scenario", front: "Requirement: private-only database connectivity.", back: "Use Private Link/private endpoint and disable public network access." },
+    { category: "Scenario", front: "Requirement: prove data was not tampered with.", back: "Use Ledger." },
+    { category: "Scenario", front: "Requirement: know where PII is stored.", back: "Use Data Discovery and Classification." },
+    { category: "Scenario", front: "Requirement: send database audit events to SIEM.", back: "Use Azure SQL Auditing to Event Hubs or Log Analytics depending on the SIEM path." },
+    { category: "Scenario", front: "Requirement: vulnerability findings and suspicious activity alerts.", back: "Use Microsoft Defender for SQL." }
+];
+
+let currentFilter = "all";
+let quizState = { currentIndex: 0, score: 0, answered: [], showResults: false };
+let flashcardState = { currentIndex: 0, flipped: false, known: [], learning: [], category: "all" };
+
+function progressDefault() {
+    return { quizScores: [], totalQuizAttempts: 0, flashcardsKnown: [], flashcardsLearning: [], lastStudyDate: null };
+}
+
+function loadProgress() {
+    const saved = localStorage.getItem("dp300-security-progress");
+    return saved ? JSON.parse(saved) : progressDefault();
+}
+
+function saveProgress(progress) {
+    localStorage.setItem("dp300-security-progress", JSON.stringify(progress));
+}
+
+document.querySelectorAll(".nav-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+        const tab = btn.dataset.tab;
+        document.querySelectorAll(".nav-btn").forEach(b => { b.classList.remove("active"); b.setAttribute("aria-selected", "false"); });
+        btn.classList.add("active");
+        btn.setAttribute("aria-selected", "true");
+        document.querySelectorAll(".section").forEach(section => section.classList.remove("active"));
+        document.getElementById(`section-${tab}`).classList.add("active");
+        if (tab === "progress") renderDashboard();
+    });
+});
+
+function renderCompare() {
+    const rows = currentFilter === "all" ? matrixData : matrixData.filter(row => row.area === currentFilter);
+    document.getElementById("compare-body").innerHTML = rows.map(row => `
+        <tr>
+            <td><strong>${row.control}</strong><br><a class="doc-link" href="${row.docUrl}" target="_blank" rel="noopener">MS Learn</a></td>
+            <td><span class="badge ${row.area.toLowerCase()}">${row.area}</span></td>
+            <td>${row.vm}</td>
+            <td>${row.db}</td>
+            <td>${row.mi}</td>
+            <td>${row.purpose}</td>
+            <td>${row.considerations}</td>
+        </tr>
+    `).join("");
+}
+
+document.querySelectorAll(".filter-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+        document.querySelectorAll(".filter-btn").forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        currentFilter = btn.dataset.filter;
+        renderCompare();
+    });
+});
+
+function renderTechExplorer() {
+    document.getElementById("tech-grid").innerHTML = techData.map((tech, i) => `
+        <div class="card tech-card" data-index="${i}" onclick="toggleTechCard(this)">
+            <span class="badge ${tech.category.toLowerCase()}">${tech.category}</span>
+            <h3>${tech.name}</h3>
+            <p class="muted">${tech.detail}</p>
+            <div class="stat-grid">
+                <div class="stat"><small>Exam focus</small><strong>${tech.examFocus}</strong></div>
+                <div class="stat"><small>Best for</small><strong>${tech.bestFor}</strong></div>
+            </div>
+            <div class="card-detail">
+                <strong>Watch out:</strong> ${tech.watchOut}<br>
+                <a class="doc-link" href="${tech.docUrl}" target="_blank" rel="noopener">Read Microsoft Learn article</a>
+            </div>
+        </div>
+    `).join("");
+}
+
+function toggleTechCard(card) {
+    card.classList.toggle("expanded");
+}
+
+function renderQuiz() {
+    const container = document.getElementById("quiz-container");
+    if (quizState.showResults) {
+        const pct = Math.round((quizState.score / quizData.length) * 100);
+        const progress = loadProgress();
+        progress.quizScores.push(pct);
+        progress.totalQuizAttempts += 1;
+        progress.lastStudyDate = new Date().toISOString();
+        saveProgress(progress);
+        container.innerHTML = `
+            <div class="quiz-card">
+                <h3>Quiz Complete</h3>
+                <div class="dashboard-stat">${pct}%</div>
+                <p class="muted">${quizState.score} of ${quizData.length} correct</p>
+                <div class="actions"><button class="btn primary" onclick="resetQuiz()">Try Again</button><button class="btn" onclick="reviewMistakes()">Review First Miss</button></div>
+            </div>`;
+        return;
+    }
+    const q = quizData[quizState.currentIndex];
+    const answered = quizState.answered[quizState.currentIndex];
+    const pct = Math.round((quizState.currentIndex / quizData.length) * 100);
+    container.innerHTML = `
+        <div class="progress-line"><div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div><span>${quizState.currentIndex + 1} / ${quizData.length}</span></div>
+        <div class="quiz-card">
+            <div class="quiz-category">${q.category}</div>
+            <div class="quiz-question">${q.question}</div>
+            <div class="quiz-options">
+                ${q.options.map((option, i) => {
+                    let cls = "";
+                    if (answered !== undefined) {
+                        cls = "disabled";
+                        if (i === q.correct) cls += " correct";
+                        else if (i === answered) cls += " incorrect";
+                    }
+                    return `<div class="quiz-option ${cls}" onclick="selectAnswer(${i})"><span class="option-letter">${String.fromCharCode(65 + i)}</span><span>${option}</span></div>`;
+                }).join("")}
+            </div>
+            <div class="quiz-explanation ${answered !== undefined ? "visible" : ""}"><strong>Explanation:</strong> ${q.explanation}<br><a class="doc-link" href="${q.docUrl}" target="_blank" rel="noopener">Study source</a></div>
+            <div class="actions">
+                <button class="btn" onclick="prevQuestion()" ${quizState.currentIndex === 0 ? "disabled" : ""}>Previous</button>
+                <button class="btn primary" onclick="nextQuestion()" ${answered === undefined ? "disabled" : ""}>${quizState.currentIndex === quizData.length - 1 ? "See Results" : "Next"}</button>
+            </div>
+        </div>`;
+}
+
+function selectAnswer(index) {
+    if (quizState.answered[quizState.currentIndex] !== undefined) return;
+    quizState.answered[quizState.currentIndex] = index;
+    if (index === quizData[quizState.currentIndex].correct) quizState.score += 1;
+    renderQuiz();
+}
+
+function nextQuestion() {
+    if (quizState.currentIndex === quizData.length - 1) quizState.showResults = true;
+    else quizState.currentIndex += 1;
+    renderQuiz();
+}
+
+function prevQuestion() {
+    if (quizState.currentIndex > 0) quizState.currentIndex -= 1;
+    renderQuiz();
+}
+
+function resetQuiz() {
+    quizState = { currentIndex: 0, score: 0, answered: [], showResults: false };
+    renderQuiz();
+}
+
+function reviewMistakes() {
+    const miss = quizState.answered.findIndex((answer, i) => answer !== quizData[i].correct);
+    if (miss >= 0) {
+        quizState.currentIndex = miss;
+        quizState.showResults = false;
+        renderQuiz();
+    }
+}
+
+function getFilteredFlashcards() {
+    if (flashcardState.category === "all") return flashcardData;
+    return flashcardData.filter(card => card.category === flashcardState.category);
+}
+
+function renderFlashcards() {
+    const container = document.getElementById("flashcard-container");
+    const cards = getFilteredFlashcards();
+    const progress = loadProgress();
+    const categories = [...new Set(flashcardData.map(card => card.category))];
+    const idx = flashcardState.currentIndex % cards.length;
+    const card = cards[idx];
+    container.innerHTML = `
+        <div class="filters">
+            <button class="filter-btn ${flashcardState.category === "all" ? "active" : ""}" onclick="filterFlashcards('all')">All</button>
+            ${categories.map(category => `<button class="filter-btn ${flashcardState.category === category ? "active" : ""}" onclick="filterFlashcards('${category}')">${category}</button>`).join("")}
+        </div>
+        <p class="muted">Card ${idx + 1} of ${cards.length}; mastered ${progress.flashcardsKnown.length} of ${flashcardData.length}</p>
+        <div class="flashcard ${flashcardState.flipped ? "flipped" : ""}" onclick="flipFlashcard()">
+            <div class="prompt"><div class="flashcard-label">${card.category}</div><div class="flashcard-text">${card.front}</div><p class="muted">Click to reveal</p></div>
+            <div class="answer"><div class="flashcard-label">Answer</div><div class="flashcard-text">${card.back}</div><p>Click to return</p></div>
+        </div>
+        <div class="actions"><button class="btn" onclick="markFlashcard('learning')">Still Learning</button><button class="btn" onclick="skipFlashcard()">Skip</button><button class="btn primary" onclick="markFlashcard('known')">Know It</button></div>`;
+}
+
+function flipFlashcard() {
+    flashcardState.flipped = !flashcardState.flipped;
+    const card = document.querySelector(".flashcard");
+    if (card) card.classList.toggle("flipped");
+}
+
+function markFlashcard(status) {
+    const cards = getFilteredFlashcards();
+    const cardKey = cards[flashcardState.currentIndex % cards.length].front;
+    const progress = loadProgress();
+    if (status === "known") {
+        if (!progress.flashcardsKnown.includes(cardKey)) progress.flashcardsKnown.push(cardKey);
+        progress.flashcardsLearning = progress.flashcardsLearning.filter(item => item !== cardKey);
+    } else {
+        if (!progress.flashcardsLearning.includes(cardKey)) progress.flashcardsLearning.push(cardKey);
+        progress.flashcardsKnown = progress.flashcardsKnown.filter(item => item !== cardKey);
+    }
+    progress.lastStudyDate = new Date().toISOString();
+    saveProgress(progress);
+    skipFlashcard();
+}
+
+function skipFlashcard() {
+    flashcardState.currentIndex += 1;
+    flashcardState.flipped = false;
+    renderFlashcards();
+}
+
+function filterFlashcards(category) {
+    flashcardState.category = category;
+    flashcardState.currentIndex = 0;
+    flashcardState.flipped = false;
+    renderFlashcards();
+}
+
+function renderDashboard() {
+    const progress = loadProgress();
+    const avg = progress.quizScores.length ? Math.round(progress.quizScores.reduce((a, b) => a + b, 0) / progress.quizScores.length) : 0;
+    const best = progress.quizScores.length ? Math.max(...progress.quizScores) : 0;
+    const mastery = Math.round((progress.flashcardsKnown.length / flashcardData.length) * 100);
+    document.getElementById("dashboard-grid").innerHTML = `
+        <div class="dashboard-card"><h3>Quiz Average</h3><div class="dashboard-stat">${avg}%</div><p class="muted">${progress.totalQuizAttempts} attempts</p></div>
+        <div class="dashboard-card"><h3>Best Quiz Score</h3><div class="dashboard-stat">${best}%</div><p class="muted">${progress.quizScores.length ? "Latest: " + progress.quizScores[progress.quizScores.length - 1] + "%" : "No attempts yet"}</p></div>
+        <div class="dashboard-card"><h3>Flashcard Mastery</h3><div class="dashboard-stat">${mastery}%</div><p class="muted">${progress.flashcardsKnown.length} of ${flashcardData.length} mastered</p><button class="btn" onclick="resetProgress()">Reset Progress</button></div>`;
+}
+
+function resetProgress() {
+    if (confirm("Reset all Security study progress?")) {
+        localStorage.removeItem("dp300-security-progress");
+        renderDashboard();
+    }
+}
+
+renderCompare();
+renderTechExplorer();
+renderQuiz();
+renderFlashcards();
+</script>
+</body>
+</html>
