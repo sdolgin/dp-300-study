@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: DP-300 Microsoft Learn Path
+    url: https://learn.microsoft.com/en-us/credentials/certifications/exams/dp-300/
+    about: Official Microsoft DP-300 exam documentation and study resources.
