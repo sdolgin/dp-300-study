@@ -1,0 +1,80 @@
+name: Content Correction or Addition
+description: Report an error, inaccuracy, or missing content on the DP-300 Study Hub
+title: "[Content]: "
+labels: ["content"]
+assignees: []
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to help improve the DP-300 Study Hub! Please fill out the sections below so the issue can be triaged and fixed quickly.
+
+  - type: dropdown
+    id: issue-type
+    attributes:
+      label: Issue Type
+      description: What kind of change are you reporting?
+      options:
+        - "Incorrect information (factual error)"
+        - "Outdated information"
+        - "Missing topic or content"
+        - "Broken or wrong link"
+        - "Typo or formatting problem"
+        - "Quiz question issue (wrong answer, unclear wording)"
+        - "Flashcard issue (wrong content)"
+        - "Other"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: page
+    attributes:
+      label: Affected Page
+      description: Which study page has the issue?
+      options:
+        - "HADR (index.html)"
+        - "Security (security.html)"
+        - "Both pages"
+        - "Not sure"
+    validations:
+      required: true
+
+  - type: input
+    id: section
+    attributes:
+      label: Section or Feature Name
+      description: "Name the section, table row, quiz question, flashcard, or technology card where the issue appears (e.g., 'Always On AG row in comparison table', 'Quiz question about RPO', 'Transparent Data Encryption flashcard')."
+      placeholder: e.g. Auto-Failover Groups comparison table row
+    validations:
+      required: true
+
+  - type: textarea
+    id: current-content
+    attributes:
+      label: Current (Incorrect or Incomplete) Content
+      description: Copy or describe exactly what is currently shown on the site that is wrong or incomplete.
+      placeholder: Paste the text, value, or describe what you see today.
+    validations:
+      required: true
+
+  - type: textarea
+    id: correct-content
+    attributes:
+      label: Correct or Suggested Content
+      description: What should it say instead, or what is missing? Be as specific as possible so a fix can be applied directly.
+      placeholder: Provide the corrected text, the missing content, or a description of what should be added.
+    validations:
+      required: true
+
+  - type: input
+    id: reference-url
+    attributes:
+      label: Reference / Source URL
+      description: "Link to the Microsoft Learn documentation, Microsoft docs, or other authoritative source that supports the correction (optional but strongly encouraged)."
+      placeholder: "https://learn.microsoft.com/en-us/azure/azure-sql/..."
+
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Additional Context
+      description: Any other details, screenshots, or context that would help understand and fix the issue.
