@@ -1,0 +1,48 @@
+name: Deploy static study site
+
+on:
+  push:
+    branches:
+      - main
+      - master
+    paths:
+      - "**.html"
+      - ".github/workflows/deploy-static-site.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write
+
+env:
+  AZURE_SUBSCRIPTION_ID: 5f721e0d-4019-4541-9a64-013a5cfdf536
+  STORAGE_ACCOUNT_NAME: sdolginstdstgacct
+  STORAGE_CONTAINER_NAME: $web
+
+jobs:
+  deploy:
+    name: Upload HTML files to Azure Storage static website
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Azure login
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ env.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Upload site files
+        uses: azure/cli@v2
+        with:
+          inlineScript: |
+            az storage blob upload-batch \
+              --account-name "${STORAGE_ACCOUNT_NAME}" \
+              --destination '${{ env.STORAGE_CONTAINER_NAME }}' \
+              --source . \
+              --pattern "*.html" \
+              --overwrite true \
+              --auth-mode login
