@@ -544,6 +544,19 @@
             color: var(--text-primary);
         }
 
+        .incorrect-explanations {
+            margin-top: 1rem;
+        }
+
+        .incorrect-explanations ul {
+            margin: 0.5rem 0 0;
+            padding-left: 1.25rem;
+        }
+
+        .incorrect-explanations li + li {
+            margin-top: 0.4rem;
+        }
+
         .quiz-actions {
             display: flex;
             justify-content: space-between;
@@ -1703,6 +1716,138 @@ const quizData = [
     }
 ];
 
+const incorrectAnswerDetails = {
+    "A company is migrating their SQL Server databases to Azure SQL Managed Instance. They need cross-region disaster recovery with automatic failover. Which feature should they configure?": {
+        "0": "Always On Availability Groups are configured for SQL Server on VMs or on-premises, not as the Azure SQL Managed Instance PaaS geo-failover feature.",
+        "1": "Active Geo-Replication applies to Azure SQL Database and uses manual failover without the failover-group listener behavior needed here.",
+        "3": "Distributed Availability Groups connect SQL Server availability groups across clusters; they are not the Managed Instance cross-region automatic failover feature."
+    },
+    "What is the key difference between Active Geo-Replication and Auto-Failover Groups in Azure SQL Database?": {
+        "0": "This reverses the features: Active Geo-Replication is manual, while Failover Groups can perform automatic failover.",
+        "2": "Active Geo-Replication is for Azure SQL Database only; Managed Instance uses Failover Groups for geo-failover.",
+        "3": "They are separate features with different failover behavior and connection-routing capabilities."
+    },
+    "A company requires RPO of exactly 0 (zero data loss) for their Azure SQL Database. Which deployment configuration achieves this within a single region?": {
+        "0": "Active Geo-Replication is asynchronous to another region, so it does not provide guaranteed zero data loss.",
+        "1": "Failover Groups use asynchronous geo-replication; changing the grace period does not make replication synchronous.",
+        "3": "Geo-redundant backups are for restore scenarios and can lag behind the primary, so their RPO is not zero."
+    },
+    "Which Azure SQL Database service tier uses a separated compute and storage architecture where failover involves attaching remote storage to a new compute node?": {
+        "0": "Business Critical keeps data on local SSDs with synchronous replicas rather than attaching remote storage to replacement compute.",
+        "2": "Hyperscale also separates compute and storage, but its page-server architecture is not the General Purpose remote-storage attach model described.",
+        "3": "Premium is a DTU purchasing tier and does not identify the separated compute/storage failover architecture in the question."
+    },
+    "What is the role of Windows Server Failover Clustering (WSFC) in a SQL Server Always On Availability Group deployment?": {
+        "0": "Availability Group replicas perform data movement by sending log records; WSFC supplies cluster membership and failover coordination, not database replication.",
+        "2": "On Windows, Availability Groups depend on WSFC for cluster health, quorum, metadata, and failover decisions; it is not only an optional automatic-failover add-on.",
+        "3": "SQL Server backup/restore operations are managed by SQL Server, Azure backup services, or administrator jobs and are not directly managed by WSFC."
+    },
+    "Which HADR technologies require you to configure and manage Windows Server Failover Clustering? (Choose the best answer)": {
+        "0": "Auto-Failover Groups and Active Geo-Replication are Azure SQL PaaS features managed by Azure, so customers do not configure WSFC.",
+        "2": "Zone-redundant and built-in HA configurations are Azure-managed PaaS capabilities, not customer-managed WSFC deployments.",
+        "3": "Log Shipping and Database Mirroring can operate without WSFC and therefore are not the best answer for WSFC-managed technologies."
+    },
+    "A global e-commerce company runs Azure SQL Database with multiple databases that must fail over together. They need automatic failover with no application connection string changes. What should they implement?": {
+        "0": "Active Geo-Replication is configured per database, uses manual failover, and does not provide group listener endpoints.",
+        "2": "Zone redundancy protects against local datacenter or zone failures inside a region, not grouped cross-region failover with listeners.",
+        "3": "Geo-Restore is a backup restore operation with longer recovery and new connection details, not automatic grouped failover."
+    },
+    "What distinguishes a Distributed Availability Group (DAG) from a standard Always On Availability Group?": {
+        "0": "A standard Availability Group operates within one WSFC cluster; a Distributed Availability Group spans separate AGs and clusters.",
+        "2": "A Distributed Availability Group is a SQL Server feature for Availability Groups, not an Azure SQL Managed Instance PaaS feature.",
+        "3": "Distributed Availability Groups support both synchronous and asynchronous commit modes, although asynchronous is common for DR."
+    },
+    "Rank these from BEST (lowest) RPO to WORST (highest) RPO: 1) Geo-Restore, 2) Auto-Failover Groups, 3) Business Critical built-in HA, 4) Point-in-Time Restore": {
+        "1": "This puts asynchronous Failover Groups ahead of Business Critical synchronous HA, so the lowest-RPO option is not first.",
+        "2": "Geo-Restore has the highest potential data-loss window of these choices, so it cannot be the best RPO.",
+        "3": "PITR's log-backup interval is generally a worse RPO than Failover Groups, so these two are ordered incorrectly."
+    },
+    "Your company runs SQL Server on Azure VMs across two Azure regions. The regions have separate Active Directory domains. You need DR replication between them. What should you use?": {
+        "0": "A single multi-subnet WSFC spanning separate domains is not the intended or supported approach for this cross-domain DR requirement.",
+        "2": "Auto-Failover Groups are Azure SQL PaaS features and do not apply to SQL Server running on Azure VMs.",
+        "3": "Log Shipping can move backups, but it is more manual and usually has higher RPO/RTO than a Distributed Availability Group for this scenario."
+    },
+    "How does the Hyperscale service tier achieve fast failover despite supporting databases up to 128 TB?": {
+        "0": "That describes Business Critical-style synchronous replicas, not Hyperscale's page-server and stateless-compute architecture.",
+        "2": "Hyperscale does not need a standby compute node preloaded with the entire database in memory.",
+        "3": "Hyperscale does not rely on database mirroring; it uses its own distributed storage architecture."
+    },
+    "Which statement about Active Geo-Replication is TRUE?": {
+        "0": "Active Geo-Replication is not supported for Azure SQL Managed Instance; it is an Azure SQL Database feature.",
+        "2": "Automatic failover and listener endpoints are Failover Group capabilities, not Active Geo-Replication capabilities.",
+        "3": "Active Geo-Replication is asynchronous, so it does not provide synchronous zero-data-loss replication."
+    },
+    "What is a Cloud Witness in the context of WSFC for SQL Server on Azure VMs?": {
+        "0": "WSFC cluster configuration is not stored in an Azure SQL Database for Cloud Witness quorum.",
+        "2": "Cloud Witness avoids requiring a witness VM; it uses Azure Storage as the independent vote.",
+        "3": "Azure Monitor can alert on health, but it is not the WSFC quorum witness mechanism."
+    },
+    "A financial services company needs their Azure SQL Database to survive a complete Azure region outage with less than 1 hour RTO. They have a multi-database application. What is the recommended approach?": {
+        "0": "Zone redundancy protects within one region and does not provide recovery from a complete regional outage.",
+        "1": "Geo-restore depends on restoring backups and commonly takes hours, especially for multi-database applications.",
+        "3": "Active Geo-Replication is per database and manual, so it does not coordinate multi-database failover as well as a Failover Group."
+    },
+    "What is a key limitation of Failover Cluster Instances (FCI) compared to Always On Availability Groups?": {
+        "0": "Failover Cluster Instances can provide automatic failover through WSFC.",
+        "2": "FCIs can be available in Standard edition scenarios; edition cost is not the defining limitation compared with readable AG secondaries.",
+        "3": "Failover Cluster Instances are supported on Azure VMs with appropriate shared-storage configurations."
+    },
+    "You need to recommend an HA/DR strategy for a SQL Server on Azure VMs instance. The solution must protect all databases including system databases, SQL Server Agent jobs, and logins, and must support automatic failover. What should you recommend?": {
+        "0": "An Availability Group protects user databases, but system databases, jobs, logins, and other instance objects need separate synchronization.",
+        "2": "Log Shipping is database-level and manual; it does not protect the full instance or provide automatic failover.",
+        "3": "Transactional replication is not an instance-level HA/DR solution and does not provide automatic failover for system databases and jobs."
+    },
+    "An application can tolerate up to 5 minutes of data loss but needs RTO under 30 seconds. The database is Azure SQL Database. Which option is MOST appropriate?": {
+        "0": "General Purpose zone redundancy is local high availability and does not meet the stated geo-recovery-style RTO option.",
+        "1": "Business Critical built-in HA protects local node or zone failures but does not address regional failover in this scenario.",
+        "3": "Auto-Failover Groups have strong RPO but typically target under 60 seconds, so they may miss the under-30-second RTO requirement."
+    },
+    "Which backup types does Azure automatically perform for Azure SQL Database and Managed Instance?": {
+        "0": "Azure SQL automated backup includes differential and transaction log backups in addition to weekly full backups.",
+        "2": "The cadence is not daily full and hourly log backups; Azure uses weekly full, 12-24 hour differential, and frequent log backups.",
+        "3": "Azure SQL Database and Managed Instance include automated backups; customers do not need to configure basic backup jobs manually."
+    },
+    "You need to migrate a SQL Server 2016 Always On AG from on-premises to Azure VMs with minimal downtime. The on-premises cluster runs Windows Server 2016 and the Azure VMs run Windows Server 2022. What approach minimizes downtime?": {
+        "0": "Backup/restore with log shipping can reduce downtime, but it is more manual and does not preserve the AG-to-AG failover path as well as a DAG.",
+        "2": "Database mirroring is deprecated and is not the recommended cross-version AG migration approach.",
+        "3": "Azure Database Migration Service can migrate databases, but the scenario specifically fits AG-to-AG migration with continuous DAG replication."
+    },
+    "In the Business Critical service tier, how many synchronous replicas are maintained and how many are readable?": {
+        "0": "Business Critical maintains three secondary replicas, not just one replica with no readable secondary.",
+        "2": "There are three secondary replicas, and only one is exposed for read-only workloads, not four all-readable secondaries.",
+        "3": "The replica count is higher than two, and the service exposes one readable secondary rather than making both replicas readable."
+    },
+    "A DBA wants to set up log shipping for their Azure SQL Managed Instance. Is this possible?": {
+        "0": "Log Shipping requires SQL Server Agent jobs and file-copy access that are not available as a customer-managed feature on Azure SQL Managed Instance.",
+        "2": "Managed Instance does not support Log Shipping even between instances in the same region.",
+        "3": "Database Mirroring is deprecated and is not offered as the Managed Instance alternative to Log Shipping."
+    },
+    "What is the difference between Point-in-Time Restore (PITR) and Long-Term Retention (LTR) in Azure SQL?": {
+        "1": "Both PITR and LTR are available across Azure SQL Database and Managed Instance scenarios; they are not split by those services.",
+        "2": "PITR and LTR have different retention windows and purposes, so they are not the same feature.",
+        "3": "PITR uses automated short-term backups, and LTR is configured for compliance retention; PITR does not require manual backup jobs."
+    },
+    "Which statement correctly describes the quorum model in WSFC for Azure VM deployments?": {
+        "0": "Disk witness is not always used in Azure; Cloud Witness is commonly recommended because it uses Azure Storage.",
+        "2": "Quorum is still required in Azure to avoid split-brain and determine cluster majority.",
+        "3": "Azure does not automatically configure all WSFC quorum settings for you; administrators choose and configure the witness model."
+    }
+};
+
+function renderIncorrectAnswerDetails(q) {
+    const details = incorrectAnswerDetails[q.question];
+    if (!details) return '';
+
+    const items = q.options.map((option, i) => {
+        if (i === q.correct) return '';
+        const detail = details[i];
+        if (!detail) return '';
+        return `<li><strong>${String.fromCharCode(65 + i)}:</strong> ${detail}</li>`;
+    }).filter(Boolean).join('');
+
+    return items ? `<div class="incorrect-explanations"><strong>Why the other answers are not correct:</strong><ul>${items}</ul></div>` : '';
+}
+
 const flashcardData = [
     { category: "Technologies", front: "What does AG stand for and what is its primary purpose?", back: "Always On Availability Group — provides HA/DR by replicating a group of databases to secondary replicas. Supports synchronous (zero data loss) and asynchronous commit modes. Requires WSFC on Windows." },
     { category: "Technologies", front: "What is a Failover Cluster Instance (FCI)?", back: "Instance-level HA using shared storage. Protects the ENTIRE instance: all databases (including system DBs), logins, SQL Server Agent jobs, and linked servers. Only one node is active at a time. If it fails, another WSFC node takes ownership of the shared storage. Does NOT provide readable secondaries." },
@@ -1918,7 +2063,7 @@ function renderQuiz() {
                 }).join('')}
             </div>
             <div class="quiz-explanation ${answered !== undefined ? 'visible' : ''}" id="quiz-explanation">
-                <strong>Explanation:</strong> <span>${q.explanation}</span>${q.docUrl ? `<a href="${q.docUrl}" target="_blank" rel="noopener" class="doc-link quiz-doc-link">Learn more on MS Learn</a>` : ''}
+                <strong>Explanation:</strong> <span>${q.explanation}</span>${renderIncorrectAnswerDetails(q)}${q.docUrl ? `<a href="${q.docUrl}" target="_blank" rel="noopener" class="doc-link quiz-doc-link">Learn more on MS Learn</a>` : ''}
             </div>
             <div class="quiz-actions">
                 <button class="btn btn-secondary" onclick="prevQuestion()" ${quizState.currentIndex === 0 ? 'disabled' : ''}>← Previous</button>
